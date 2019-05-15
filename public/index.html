@@ -1,23 +1,43 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>Home Page</title>
-        <meta charset="utf-8"/>
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
-        <script type="application/javascript" src="https://cdn.jsdelivr.net/npm/vue"></script>
-        <script type="application/javascript" src="wsclient.js"></script>
-    </head>
-    <body onload="Init();">
-        <div id="app">
-            <h3>WebSocket Messages</h3>
-            <p>Number of Clients: {{ client_count }}</p>
-            <input type="text" v-model="new_message" value="" />
-            <button type="button" @click="SendMessage">Send</button>
-            <br />
-            <ul>
-				<li v-for="message in chat_messages">{{message}}</li>
-            </ul>
-        </div>
-    </body>
-</html>
+<head>
+  <title>Spotify Web Playback SDK Quick Start Tutorial</title>
+</head>
+<body>
+  <h1>Spotify Web Playback SDK Quick Start Tutorial</h1>
+  <h2>Open your console log: <code>View > Developer > JavaScript Console</code></h2>
 
+  <script src="https://sdk.scdn.co/spotify-player.js"></script>
+  <script>
+    window.onSpotifyWebPlaybackSDKReady = () => {
+      const token = 'BQBXxxFJat5iP5eng22m_ZySOfmH8wrlcMvH3yexPaBSFNdDNUp8dKv-zVIlJcrJd9TtVPU5uZpkW_jYkOgV6WdczQ4STMi9gmSBceCS7Jv6b62rpoDJW12Mn4ZvmPmaJ5pFZ8JXYLyaHcqnd1N5J0-fxV1j1IQmPhKmxT3I';
+      const player = new Spotify.Player({
+        name: 'Web Playback SDK Quick Start Player',
+        getOAuthToken: cb => { cb(token); }
+      });
+
+      // Error handling
+      player.addListener('initialization_error', ({ message }) => { console.error(message); });
+      player.addListener('authentication_error', ({ message }) => { console.error(message); });
+      player.addListener('account_error', ({ message }) => { console.error(message); });
+      player.addListener('playback_error', ({ message }) => { console.error(message); });
+
+      // Playback status updates
+      player.addListener('player_state_changed', state => { console.log(state); });
+
+      // Ready
+      player.addListener('ready', ({ device_id }) => {
+        console.log('Ready with Device ID', device_id);
+      });
+
+      // Not Ready
+      player.addListener('not_ready', ({ device_id }) => {
+        console.log('Device ID has gone offline', device_id);
+      });
+
+      // Connect to the player!
+      player.connect();
+    };
+  </script>
+</body>
+</html>
