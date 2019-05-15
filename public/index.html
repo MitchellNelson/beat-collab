@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Home Page</title>
+        <meta charset="utf-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+        <script type="application/javascript" src="https://cdn.jsdelivr.net/npm/vue"></script>
+        <script type="application/javascript" src="wsclient.js"></script>
+    </head>
+    <body onload="Init();">
+        <div id="app">
+            <h3>WebSocket Messages</h3>
+            <p>Number of Clients: {{ client_count }}</p>
+            <input type="text" v-model="new_message" value="" />
+            <button type="button" @click="SendMessage">Send</button>
+            <br />
+            <ul>
+				<li v-for="message in chat_messages">{{message}}</li>
+            </ul>
+        </div>
+    </body>
+</html>
+
