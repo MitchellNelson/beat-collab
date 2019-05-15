@@ -1,0 +1,26 @@
+{
+    "name": "dynamic_server",
+    "version": "1.0.0",
+    "description": "CISC 375 Multi-UserWebGame",
+    "author": "Mitchell Nelson <nels4929@stthomas.edu>",
+    "contributors": [
+        "Mitchell Nelson <nels4929@stthomas.edu>"
+    ],
+    "repository": "https://github.com/nels4929/Multi-UserWebGame",
+    "main": "server.js",
+    "dependencies": {
+        "body-parser": "^1.19.0",
+        "express": "^4.16.4",
+        "express-session": "^1.16.1",
+        "md5": "^2.2.1",
+        "multiparty": "^4.2.1",
+        "socket.io": "^2.2.0",
+        "sqlite3": "^4.0.6",
+        "websocket": "^1.0.28",
+        "ws": "^7.0.0"
+    },
+    "engines": {
+        "node": ">= 10.0.0",
+        "npm": ">= 6.0.0"
+    }
+}
