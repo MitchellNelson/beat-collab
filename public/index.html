@@ -2,42 +2,17 @@
 <html>
 <head>
   <title>Spotify Web Playback SDK Quick Start Tutorial</title>
+  <link rel="stylesheet" href="styles/game.css"/>
+  <script type="application/javascript" src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+  <script type="application/javascript" src="https://cdn.jsdelivr.net/npm/vue"></script>
+  <script type="application/javascript" src="scripts/index.js"></script>
 </head>
-<body>
-  <h1>Spotify Web Playback SDK Quick Start Tutorial</h1>
-  <h2>Open your console log: <code>View > Developer > JavaScript Console</code></h2>
-
-  <script src="https://sdk.scdn.co/spotify-player.js"></script>
-  <script>
-    window.onSpotifyWebPlaybackSDKReady = () => {
-      const token = 'BQBXxxFJat5iP5eng22m_ZySOfmH8wrlcMvH3yexPaBSFNdDNUp8dKv-zVIlJcrJd9TtVPU5uZpkW_jYkOgV6WdczQ4STMi9gmSBceCS7Jv6b62rpoDJW12Mn4ZvmPmaJ5pFZ8JXYLyaHcqnd1N5J0-fxV1j1IQmPhKmxT3I';
-      const player = new Spotify.Player({
-        name: 'Web Playback SDK Quick Start Player',
-        getOAuthToken: cb => { cb(token); }
-      });
-
-      // Error handling
-      player.addListener('initialization_error', ({ message }) => { console.error(message); });
-      player.addListener('authentication_error', ({ message }) => { console.error(message); });
-      player.addListener('account_error', ({ message }) => { console.error(message); });
-      player.addListener('playback_error', ({ message }) => { console.error(message); });
-
-      // Playback status updates
-      player.addListener('player_state_changed', state => { console.log(state); });
-
-      // Ready
-      player.addListener('ready', ({ device_id }) => {
-        console.log('Ready with Device ID', device_id);
-      });
-
-      // Not Ready
-      player.addListener('not_ready', ({ device_id }) => {
-        console.log('Device ID has gone offline', device_id);
-      });
-
-      // Connect to the player!
-      player.connect();
-    };
-  </script>
+<body onload="init()">
+	<audio id="audioPlayer" controls>
+		<source src="horse.ogg" type="audio/ogg">
+		<source src="music/485 Chinnock.mp3" type="audio/mpeg">
+		Your browser does not support the audio element.
+	</audio>
+  <button id="signal_button">Play</button>
 </body>
 </html>

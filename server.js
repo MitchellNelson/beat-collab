@@ -8,7 +8,7 @@ var app = express();
 var server = http.createServer(app);
 var port = 8016;
 
-var public_dir = path.join(__dirname, 'ws_public');
+var public_dir = path.join(__dirname, 'public');
 
 app.use(express.static(public_dir));
 var messages = [];
@@ -18,28 +18,31 @@ var client_count = 0;
 wss.on('connection', (ws) => {
     var client_id = ws._socket.remoteAddress + ":" + ws._socket.remotePort;
     console.log('New connection: ' + client_id);
-    clients[client_id] = ws;
-	client_count++;
-	ws.on('message', (message) => {
+    client_count++;
+    clients[client_id] = ws;   
+    //clients[client_id].send(JSON.stringify({msg:'client_count',data:clients[client_id].player_num}));
+    BroadcastPlayerNum();
+    ws.on('message', (message) => {
         console.log('Message from ' + client_id + ': ' + message);
-		var chat = {msg:'text', data:message};
-		messages.push(message.data);
-		Broadcast(JSON.stringify(chat));
-	});
+        Broadcast(message);
+    });
     ws.on('close', () => {
         console.log('Client disconnected: ' + client_id);
         delete clients[client_id];
-    	client_count--;
-		UpdateClientCount();
-	});
-	UpdateClientCount();
+        client_count--;
+    });
 });
-
-function UpdateClientCount(){
-	var id;
-	var message={msg: 'client_count', data: client_count}
-    Broadcast(JSON.stringify(message));
+function BroadcastPlayerNum(){
+   	var id;
+    var i = 1;
+    for(id in clients){
+		if(clients.hasOwnProperty(id)){
+			clients[id].send(JSON.stringify({msg:'client_count',data:i}));
+		    i++;
+        }
+	}
 }
+
 function Broadcast(message){
 	var id;
 	for(id in clients){
