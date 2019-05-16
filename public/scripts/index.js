@@ -7,6 +7,7 @@ function init()
 	app = new Vue({
 		el: "#app",
 		data: {
+            plays:"null"
         }
 	});
     //Get player_button from html
@@ -32,7 +33,9 @@ function init()
         }
         else if(message.msg ==="play"){
             console.log("Got a play message!")
+            plays="play message recieved"
             player_button.play();
+
         }
     };
 }
@@ -40,4 +43,3 @@ function sendPlaySignal(){
 
     ws.send(JSON.stringify({"msg": "play","yes":"no"}));
 }
-
