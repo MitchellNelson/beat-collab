@@ -1,7 +1,7 @@
 var ws;
 var app;
 var signal_button;
-var delay_seconds = 3000;
+var delay_seconds = 1;
 
 function init(){
 	app = new Vue({
@@ -35,12 +35,17 @@ function init(){
         }
         else if(message.msg ==='play'){
             //calculate how long until start
-            var now = new Date();
-            var millis_until_play = new Date(message.start_time).getMilliseconds(); - now.getMilliseconds();
+            var now = new Date(ts.now());
+            var future =  new Date(message.start_time);
+            var millis_until_play =future - now;
             setTimeout(function(){
                 player_button.play();
             }, millis_until_play);
-        }
+/*            setTimeout(function(){
+                player_button.currentTime = 2.0;
+            }, 2000);*/
+        
+        }    
     };
 }
 
@@ -51,8 +56,9 @@ function sendPlaySignal(){
 }
 
 function calculateStartTime(){
-    var curr_time = new Date()     
-    var seconds = curr_time.getMilliseconds() + delay_seconds;
-    var start_time = curr_time + seconds;
-    return start_time;
+    var curr_time = new Date(ts.now());     
+    curr_time.setUTCSeconds(curr_time.getSeconds()+delay_seconds);
+    return curr_time;
 }
+
+

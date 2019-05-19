@@ -16,6 +16,7 @@
         "multiparty": "^4.2.1",
         "socket.io": "^2.2.0",
         "sqlite3": "^4.0.6",
+        "timesync": "^1.0.3",
         "websocket": "^1.0.28",
         "ws": "^7.0.0"
     },

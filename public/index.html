@@ -6,7 +6,17 @@
   <script type="application/javascript" src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
   <script type="application/javascript" src="https://cdn.jsdelivr.net/npm/vue"></script>
   <script type="application/javascript" src="scripts/index.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/es5-shim/4.0.5/es5-shim.min.js"></script> 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/es6-shim/0.23.0/es6-shim.min.js"></script>
+  <script src="../timesync/timesync.js"></script> 
 </head>
+<script>
+    // create a timesync client
+    var ts = timesync.create({
+        server: '/timesync',
+        interval: 10000
+                            });
+</script>
 <body onload="init()">
 	<audio id="audioPlayer" controls preload="auto">
 		<source src="music/485 Chinnock.mp3" type="audio/mpeg">

@@ -3,10 +3,10 @@ var url = require('url');
 var http = require('http');
 var express = require('express');
 var WebSocket = require('ws');
-
+var timesyncServer = require('timesync/server');
 var app = express();
 var server = http.createServer(app);
-var port = 8099;
+var port = 8098;
 
 var public_dir = path.join(__dirname, 'public');
 
@@ -54,4 +54,4 @@ function Broadcast(message){
 
 server.listen(port, '0.0.0.0');
 console.log('Now listening on port ' + port);
-
+app.use('/timesync', timesyncServer.requestHandler);
