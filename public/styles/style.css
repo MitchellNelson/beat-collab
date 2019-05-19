@@ -1,0 +1,12 @@
+.pads{
+	width:4rem;
+	height: 4rem;
+	background-color: grey;
+}
+
+.pads:hover {
+	opacity: .8;
+}
+.pads-selected{
+	background-color: red;
+}
