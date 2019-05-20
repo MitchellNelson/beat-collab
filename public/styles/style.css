@@ -10,3 +10,6 @@
 .pads-selected{
 	background-color: red;
 }
+.curr_note{
+	opacity: .8;
+}

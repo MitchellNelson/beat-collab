@@ -28,7 +28,7 @@
 						<td
 						v-for="(element, index) in drum_row.elements" 
 						@click="drum_row.elements.splice(index, 1,!drum_row.elements[index])"
-						:class="{ 'pads':true, 'pads-selected' : element == true}">
+						:class="{ 'pads': true, 'pads-selected': element == true, 'curr_note': drum_row.curr_notes[index]==true}">
 						</td>
 					</tr>
 				</tbody>

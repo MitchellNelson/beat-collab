@@ -10,10 +10,12 @@ function Init()
         }
 	});
    
-    CreateDrum("Kick", "../audio/Brooklyn_Kick.mp3");
-    CreateDrum("Snare", "../audio/Brooklyn_Snare.mp3");
-    CreateDrum("Hihat", "../audio/Brooklyn_Hat.mp3");
-    CreateDrum("Open Hihat", "../audio/Brooklyn_OpenHat.mp3");
+    CreateDrum("Kick", "../audio/Kick.mp3");
+    CreateDrum("Snare", "../audio/Snare.mp3");
+    CreateDrum("Hihat", "../audio/Hat.mp3");
+    CreateDrum("Open Hihat", "../audio/OpenHat.mp3");
+    CreateDrum("Tom", "../audio/Tom.mp3");
+    CreateDrum("Floor Tom", "../audio/Floor.mp3");
 
     //Websocket setup
     var port = window.location.port || "80";
@@ -61,28 +63,35 @@ this.stop = function(){
 }
 
 function Play(){
-    var i =0;
-    var timer = new interval(200, function(){
+    var i = 0;
+    var prev_i = 15;
+    var timer = new interval(100, function(){
+
         for(var j = 0; j<app.all_rows.length; j++){
+            app.all_rows[j].curr_notes.splice(i, 1, true);
             if(app.all_rows[j].elements[i] == true ){
                 app.all_rows[j].audio_elements[i].play();
             }
+            app.all_rows[j].curr_notes.splice(prev_i, 1, false);
+            
         }
+        prev_i=i;
         i = (i + 1) % 16;
     })
     timer.run()
 }
 
 function drum_row(name, audio_path){
-    this.inst = null;
+    this.inst = name;
     this.elements = [];
     this.audio_elements = [];
-
+    this.curr_notes = [];
     var audio_element = AddAudioElement(name,audio_path);
 
     //initialize elements to all false 
     //initialize all 16 cloned audio players
     for(var i = 0; i<num_counts * 4; i++){
+        this.curr_notes.push(false);
         this.elements.push(false);
         this.audio_elements.push(audio_element.cloneNode());
     }
@@ -90,7 +99,6 @@ function drum_row(name, audio_path){
 
 function CreateDrum(name, audio_path){
     new_drum_row = new drum_row(name, audio_path);
-    new_drum_row.inst = name;
     app.all_rows.push(new_drum_row);
 }
 
