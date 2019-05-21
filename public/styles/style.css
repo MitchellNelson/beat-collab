@@ -23,5 +23,5 @@ table{
 }
 .pads-play.curr_note{
 	transform: scale(1.5);
-	transition: all .7s ease-out;
+	transition: all 1s ease-out;
 }
