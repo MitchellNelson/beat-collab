@@ -22,6 +22,6 @@ table{
 	opacity: .8;
 }
 .pads-play.curr_note{
-	transform: scale(1.5);
-	transition: all 1s ease-out;
+	/*transform: scale(1.1);*/
+	
 }

@@ -8,16 +8,30 @@ function Init()
 		data: {
             all_rows: [],
             curr_selected:null,
-            bpm: 120,
+            curr_note_index:0,
+            prev_note_index:15,
+            bpm: 100,
+            playing: true,
             timer: null
         },
         watch: {
             bpm: function(){
                 Stop();
                 Play();
+            },
+            playing: function(){
+                if(this.playing){
+                    Play();
+                }
+                else{
+                    Stop();
+                }
             }
         }
+
 	});
+
+    
    
     CreateDrum("Kick", "../audio/Kick.mp3");
     CreateDrum("Snare", "../audio/Snare.mp3");
@@ -73,19 +87,19 @@ this.stop = function(){
 }
 
 function Play(){
-    var i = 0;
-    var prev_i = 15;
+    //var app.curr_note_index = 0;
+    //var app.prev_note_index = 15;
     app.timer = new interval(60000/app.bpm/4, function(){
         for(var j = 0; j<app.all_rows.length; j++){
-            app.all_rows[j].nodes[i].curr_note = true;
-            app.all_rows[j].nodes[prev_i].curr_note = false;
-            if(app.all_rows[j].nodes[i].play == true ){
-                app.all_rows[j].nodes[i].audio_element.play();
+            app.all_rows[j].nodes[app.curr_note_index].curr_note = true;
+            app.all_rows[j].nodes[app.prev_note_index].curr_note = false;
+            if(app.all_rows[j].nodes[app.curr_note_index].play == true ){
+                app.all_rows[j].nodes[app.curr_note_index].audio_element.play();
             }
 
         }
-        prev_i=i;
-        i = (i + 1) % 16;
+        app.prev_note_index=app.curr_note_index;
+        app.curr_note_index = (app.curr_note_index + 1) % 16;
     })
     app.timer.run();
 }
@@ -97,12 +111,14 @@ function Stop(){
 function drum_row(name, audio_path){
     this.inst = name;
     this.nodes = [];
-    var audio_element = AddAudioElement(name,audio_path);
-
+        var sound = new Howl({
+            src: [audio_path]
+        });
     //initialize elements to all false 
     //initialize all 16 cloned audio players
     for(var i = 0; i<num_counts * 4; i++){
-        var node_entry = {curr_note: false, selected: false, play: false, audio_element: audio_element.cloneNode()};
+
+        var node_entry = {curr_note: false, selected: false, play: false, audio_element: sound};
         this.nodes.push(node_entry);
     }
 }
