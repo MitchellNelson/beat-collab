@@ -26,13 +26,15 @@
 					<tr >
 						<td>{{drum_row.inst}}</td>
 						<td
-						v-for="(element, index) in drum_row.elements" 
-						@click="drum_row.elements.splice(index, 1,!drum_row.elements[index])"
-						:class="{ 'pads': true, 'pads-selected': element == true, 'curr_note': drum_row.curr_notes[index]==true}">
+						v-for="(node, index) in drum_row.nodes" 
+						@click="node.play = !node.play"
+						:class="{ 'pads': true, 'pads-selected': node.selected == true, 'pads-play': node.play == true, 'curr_note': node.curr_note==true}">
 						</td>
 					</tr>
 				</tbody>
 			</table>
+			<input type="range" min="1" max="200" v-model="bpm" class="slider" id="myRange">
+			<input type="number" v-model="bpm"/>
 		</center>
 	</div>
 </body>

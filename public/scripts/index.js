@@ -6,7 +6,16 @@ function Init()
 	app = new Vue({
 		el: "#app",
 		data: {
-            all_rows: []
+            all_rows: [],
+            curr_selected:null,
+            bpm: 120,
+            timer: null
+        },
+        watch: {
+            bpm: function(){
+                Stop();
+                Play();
+            }
         }
 	});
    
@@ -35,12 +44,13 @@ function Init()
     Play();
 }
 
+//interval.js - https://gist.github.com/manast/1185904 
 function interval(duration, fn){
-  this.baseline = undefined
+    this.baseline = undefined
   
-  this.run = function(){
+    this.run = function(){
     if(this.baseline === undefined){
-      this.baseline = new Date().getTime()
+        this.baseline = new Date().getTime()
     }
     fn()
     var end = new Date().getTime()
@@ -48,14 +58,14 @@ function interval(duration, fn){
  
     var nextTick = duration - (end - this.baseline)
     if(nextTick<0){
-      nextTick = 0
+        nextTick = 0
     }
     (function(i){
         i.timer = setTimeout(function(){
         i.run(end)
       }, nextTick)
     }(this))
-  }
+}
 
 this.stop = function(){
    clearTimeout(this.timer)
@@ -65,35 +75,35 @@ this.stop = function(){
 function Play(){
     var i = 0;
     var prev_i = 15;
-    var timer = new interval(100, function(){
-
+    app.timer = new interval(60000/app.bpm/4, function(){
         for(var j = 0; j<app.all_rows.length; j++){
-            app.all_rows[j].curr_notes.splice(i, 1, true);
-            if(app.all_rows[j].elements[i] == true ){
-                app.all_rows[j].audio_elements[i].play();
+            app.all_rows[j].nodes[i].curr_note = true;
+            app.all_rows[j].nodes[prev_i].curr_note = false;
+            if(app.all_rows[j].nodes[i].play == true ){
+                app.all_rows[j].nodes[i].audio_element.play();
             }
-            app.all_rows[j].curr_notes.splice(prev_i, 1, false);
-            
+
         }
         prev_i=i;
         i = (i + 1) % 16;
     })
-    timer.run()
+    app.timer.run();
+}
+
+function Stop(){
+    app.timer.stop();
 }
 
 function drum_row(name, audio_path){
     this.inst = name;
-    this.elements = [];
-    this.audio_elements = [];
-    this.curr_notes = [];
+    this.nodes = [];
     var audio_element = AddAudioElement(name,audio_path);
 
     //initialize elements to all false 
     //initialize all 16 cloned audio players
     for(var i = 0; i<num_counts * 4; i++){
-        this.curr_notes.push(false);
-        this.elements.push(false);
-        this.audio_elements.push(audio_element.cloneNode());
+        var node_entry = {curr_note: false, selected: false, play: false, audio_element: audio_element.cloneNode()};
+        this.nodes.push(node_entry);
     }
 }
 

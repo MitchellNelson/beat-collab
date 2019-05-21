@@ -1,15 +1,27 @@
+table{
+	border-spacing: 0px;
+}
+
 .pads{
 	width:4rem;
 	height: 4rem;
-	background-color: grey;
+	background-color: #576377;
+	border: 1px solid white;
 }
 
 .pads:hover {
 	opacity: .8;
 }
+.pads-play{
+	background-color: #faaf4f;
+}
 .pads-selected{
-	background-color: red;
+	border: 1px solid black;
 }
 .curr_note{
 	opacity: .8;
+}
+.pads-play.curr_note{
+	transform: scale(1.5);
+	transition: all .7s ease-out;
 }
