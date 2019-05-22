@@ -22,12 +22,12 @@
 		<div id="center_column">
 			<div id="audio_bay"></div>
 				<table id="drum_table">
-					<tbody v-for="drum_row in all_rows">
+					<tbody v-for="(drum_row, row_index) in all_rows">
 						<tr >
 							<td>{{drum_row.inst}}</td>
 							<td
-							v-for="(node, index) in drum_row.nodes" 
-							@click="node.play = !node.play"
+							v-for="(node, node_index) in drum_row.nodes" 
+							@click="ClickNode(row_index, node_index)"
 							:class="{ 'pads': true, 'pads-selected': node.selected == true, 'pads-play': node.play == true, 'curr_note': node.curr_note==true}">
 							</td>
 						</tr>
@@ -35,8 +35,8 @@
 				</table>
 				<center>
 					<div class="controls">
-						<button @click="ClickStopButton()" v-if="playing==true">Stop</button>
-						<button @click="ClickPlayButton()" v-if="playing==false">Play</button>
+						<button @click="SendStopMessage()" v-if="playing==true">Stop</button>
+						<button @click="SendPlayMessage()" v-if="playing==false">Play</button>
 						BPM: {{bpm}}: <input type="range" min="1" max="200" v-model="bpm" class="slider" id="myRange">
 						<!---<input type="number" v-model="bpm" class="bmp_input"/>-->
 					</div>

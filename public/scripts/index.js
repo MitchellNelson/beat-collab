@@ -60,14 +60,17 @@ function Init()
             app.playing = !app.playing;
             //Stop();
         }
+        else if(message.msg === "selected_pad"){
+            app.all_rows[message.row_index].nodes[message.node_index].play =! app.all_rows[message.row_index].nodes[message.node_index].play;
+        }
     };
 }
 
-function ClickPlayButton(){ 
+function SendPlayMessage(){ 
     ws.send(JSON.stringify({'msg': 'play'}));
 }
 
-function ClickStopButton(){
+function SendStopMessage(){
     ws.send(JSON.stringify({'msg': 'stop'}));
 }
 
@@ -88,6 +91,11 @@ function Play(){
 
 function Stop(){
     app.timer.stop();
+}
+
+function ClickNode(row_index, node_index){
+    ws.send(JSON.stringify({'msg': 'selected_pad', 'row_index': row_index, 'node_index': node_index}));
+    
 }
 
 function drum_row(name, audio_path){
