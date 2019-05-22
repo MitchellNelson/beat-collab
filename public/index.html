@@ -6,8 +6,7 @@
   <script type="application/javascript" src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
   <script type="application/javascript" src="https://cdn.jsdelivr.net/npm/vue"></script>
   <script type="application/javascript" src="scripts/index.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/es5-shim/4.0.5/es5-shim.min.js"></script> 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/es6-shim/0.23.0/es6-shim.min.js"></script>
+  <script type="application/javascript" src="scripts/interval.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.1.2/howler.core.min.js"></script>
   <script src="../timesync/timesync.js"></script> 
 </head>
@@ -20,25 +19,29 @@
 </script>
 <body onload="Init()">
 	<div id="app">
-		<div id="audio_bay"></div>
-		<center>
-			<table id="drum_table">
-				<tbody v-for="drum_row in all_rows">
-					<tr >
-						<td>{{drum_row.inst}}</td>
-						<td
-						v-for="(node, index) in drum_row.nodes" 
-						@click="node.play = !node.play"
-						:class="{ 'pads': true, 'pads-selected': node.selected == true, 'pads-play': node.play == true, 'curr_note': node.curr_note==true}">
-						</td>
-					</tr>
-				</tbody>
-			</table>
-			<button @click="playing = !playing" v-if="playing==true">Stop</button>
-			<button @click="playing = !playing" v-if="playing==false">Play</button>
-			<input type="range" min="1" max="200" v-model="bpm" class="slider" id="myRange">
-			<input type="number" v-model="bpm"/>
-		</center>
+		<div id="center_column">
+			<div id="audio_bay"></div>
+				<table id="drum_table">
+					<tbody v-for="drum_row in all_rows">
+						<tr >
+							<td>{{drum_row.inst}}</td>
+							<td
+							v-for="(node, index) in drum_row.nodes" 
+							@click="node.play = !node.play"
+							:class="{ 'pads': true, 'pads-selected': node.selected == true, 'pads-play': node.play == true, 'curr_note': node.curr_note==true}">
+							</td>
+						</tr>
+					</tbody>
+				</table>
+				<center>
+					<div class="controls">
+						<button @click="ClickStopButton()" v-if="playing==true">Stop</button>
+						<button @click="ClickPlayButton()" v-if="playing==false">Play</button>
+						BPM: {{bpm}}: <input type="range" min="1" max="200" v-model="bpm" class="slider" id="myRange">
+						<!---<input type="number" v-model="bpm" class="bmp_input"/>-->
+					</div>
+				</center>
+		</div>
 	</div>
 </body>
 </html>
