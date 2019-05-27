@@ -25,11 +25,26 @@
 				<table id="drum_table">
 					<tbody v-for="(drum_row, row_index) in all_rows">
 						<tr >
-							<td>{{drum_row.inst}}</td>
+							<td :class="{'inst': row_index!= 0}">{{drum_row.inst}}</td>
 							<td
 							v-for="(node, node_index) in drum_row.nodes" 
 							@click="ClickNode(row_index, node_index)"
-							:class="{ 'pads': true, 'pads-selected': node.selected == true, 'pads-play': node.play == true, 'curr_note': node.curr_note==true}">
+							:class="{ 'pads': true, 'pads-selected': node.selected == true, 'pads-play': node.play == true, 'curr_note': node.curr_note==true, 'down_beats': node_index%4==0}">
+							</td>
+						</tr>
+						<tr v-if="row_index == all_rows.length-1">
+							<td>
+								<div >
+									<button class="buttons" @click="add_drum_drop = !add_drum_drop" v-if="add_drum_drop == true">-</button>
+									<button class="buttons" @click="add_drum_drop = !add_drum_drop" v-else>+</button>
+									<div  v-if="add_drum_drop == true" v-for="(drum, drum_index) in avail_drums">
+										<table>
+											<tr>
+												<td @click="CreateDrum(drum.name, drum.file_path, drum_index)">{{drum.name}}</td>
+											</tr>
+										</table>
+									</div>
+								</div>
 							</td>
 						</tr>
 					</tbody>
@@ -41,7 +56,7 @@
 						</span>
 						<span class="control_items">
 							<button @click="SendStopMessage()" v-if="playing==true" class="buttons">
-								<i class="fas fa-pause"></i>
+								<i class="fas fa-stop"></i>
 							</button>
 							<button @click="SendPlayMessage()" v-if="playing==false" class="buttons">
 								<i class="fas fa-play"></i>

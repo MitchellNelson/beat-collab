@@ -13,12 +13,14 @@ function Init()
             bpm: 100,
             playing: false,
             user_num:null,
-            timer: null
+            timer: null,
+            avail_drums:[],
+            add_drum_drop: false
         },
         watch: {
             bpm: function(){
                 Stop();
-                Play();
+                this.playing=false;
             },
             playing: function(){
                 if(this.playing){
@@ -34,9 +36,14 @@ function Init()
     CreateDrum("Kick", "../audio/Kick.mp3");
     CreateDrum("Snare", "../audio/Snare.mp3");
     CreateDrum("Hihat", "../audio/Hat.mp3");
-    CreateDrum("Open Hihat", "../audio/OpenHat.mp3");
-    CreateDrum("Tom", "../audio/Tom.mp3");
-    CreateDrum("Floor Tom", "../audio/Floor.mp3");
+    //CreateDrum("Open Hihat", "../audio/OpenHat.mp3");
+    //CreateDrum("Tom", "../audio/Tom.mp3");
+    //CreateDrum("Floor Tom", "../audio/Floor.mp3");
+
+    app.avail_drums.push({"name": "Open Hihat", "file_path": "../audio/OpenHat.mp3"})
+    app.avail_drums.push({"name": "Tom", "file_path": "../audio/Tom.mp3"})
+    app.avail_drums.push({"name": "Floor Tom", "file_path": "../audio/Floor.mp3"})
+
 
     //Websocket setup
     var port = window.location.port || "80";
@@ -91,6 +98,7 @@ function Play(){
 
 function Stop(){
     app.timer.stop();
+    ResetCurNote();
 }
 
 function ClickNode(row_index, node_index){
@@ -106,13 +114,30 @@ function drum_row(name, audio_path){
     });
     //initialize elements to all false 
     //initialize all 16 cloned audio players
-    for(var i = 0; i<num_counts * 4; i++){
+    var i;
+    for(i = 0; i<num_counts * 4; i++){
         var node_entry = {curr_note: false, selected: false, play: false, audio_element: sound};
         this.nodes.push(node_entry);
     }
 }
 
-function CreateDrum(name, audio_path){
+function ResetCurNote(){
+    clearTimeout();
+    app.curr_note_index = 0;
+    app.prev_note_index = 15;
+    var i;
+    for(i = 0; i<app.all_rows.length; i++){
+        var j;
+        for(j = 0; j<num_counts * 4; j++){
+            app.all_rows[i].nodes[j].curr_note = false;
+        }
+    }
+}
+
+function CreateDrum(name, audio_path, index){
+    //remove the element from avail_drums
+    app.avail_drums.splice(index,1);
+
     new_drum_row = new drum_row(name, audio_path);
     app.all_rows.push(new_drum_row);
 }

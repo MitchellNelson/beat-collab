@@ -9,6 +9,7 @@ table{
 	border-spacing: 2px;
 	width:100%;
 }
+button:focus {outline:0;}
 #center_column{
 	margin: 0 5rem 0 5rem;
 	background-color: white;
@@ -24,6 +25,9 @@ table{
 .control_items{
 	margin: 0 2rem 0 2rem; 
 }
+.inst{
+	border-top:2px solid #555555;;
+}
 .pads{
 	width:4rem;
 	height: 4rem;
@@ -32,6 +36,9 @@ table{
 }
 .pads:hover {
 	opacity: .8;
+}
+.down_beats{
+	background-color: #454f60;
 }
 .pads-play{
 	background-color: #faaf4f;
@@ -43,7 +50,6 @@ table{
 }
 .pads-play.curr_note{
 	transform: scale(1.1);
-	
 }
 .slider {
   -webkit-appearance: none;
@@ -76,7 +82,9 @@ table{
 }
 .buttons {
 	background-color: #555555;
-	padding: 12px 24px;
+	width:3rem;
+	height: 3rem;
+	/*padding: 12px 24px;*/
 	text-align: center;
 	text-decoration: none;
 	display: inline-block;
@@ -91,4 +99,9 @@ table{
 .buttons:hover {
 	background-color: #f4f5f7;
 	color: black;
+}
+@media only screen and (max-width: 1000px){
+	#center_column{
+		margin: 0 .5rem 0 .5rem;
+	}
 }
