@@ -26,8 +26,8 @@
 					<tbody v-for="(drum_row, row_index) in all_rows">
 						<tr>
 							
-							<td :class="{'inst': row_index!= 0, 'all_inst': true}">
-								<span v-if="add_drum_drop == true" @click="SendRemoveDrumMessage(drum_row.inst, drum_row.file_path, row_index)">
+							<td @click="SendRemoveDrumMessage(drum_row.inst, drum_row.file_path, row_index)" :class="{'inst': row_index!= 0, 'all_inst': true}">
+								<span v-if="add_drum_drop == true" >
 									<i class="remove fas fa-minus-circle"></i>
 								</span>
 								{{drum_row.inst}}
