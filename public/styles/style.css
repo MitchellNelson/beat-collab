@@ -1,7 +1,7 @@
 body{
 	margin: 0;
 	padding: 0;
-	color:555555;
+	color:#555555;
 	background-color: #f4f5f7;
 	font-family: Verdana, sans-serif
 }
@@ -36,6 +36,15 @@ button:focus {outline:0;}
 .all_inst:hover{
 	cursor: pointer;
 	background-color: #f4f5f7;
+}
+.remove{
+	color: #f2686c;
+}
+.remove:hover, .add:hover{
+	color: #555555;
+}
+.add{
+	color: #85d372;
 }
 .pads{
 	width:4rem;

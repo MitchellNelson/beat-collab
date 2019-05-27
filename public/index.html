@@ -24,8 +24,14 @@
 			<div id="audio_bay"></div>
 				<table class="drum_table">
 					<tbody v-for="(drum_row, row_index) in all_rows">
-						<tr >
-							<td :class="{'inst': row_index!= 0, 'all_inst': true}">{{drum_row.inst}}</td>
+						<tr>
+							
+							<td :class="{'inst': row_index!= 0, 'all_inst': true}">
+								<span v-if="add_drum_drop == true" @click="SendRemoveDrumMessage(drum_row.inst, drum_row.file_path, row_index)">
+									<i class="remove fas fa-minus-circle"></i>
+								</span>
+								{{drum_row.inst}}
+							</td>
 							<td
 							v-for="(node, node_index) in drum_row.nodes" 
 							@click="ClickNode(row_index, node_index)"
@@ -40,7 +46,7 @@
 									<div  v-if="add_drum_drop == true" v-for="(drum, drum_index) in avail_drums">
 										<table>
 											<tr>
-												<td :class="{'inst': drum_index!= 0, 'all_inst': true}" @click="SendCreateDrumMessage(drum.name, drum.file_path, drum_index)">+ {{drum.name}}</td>
+												<td :class="{'inst': drum_index!= 0, 'all_inst': true}" @click="SendCreateDrumMessage(drum.name, drum.file_path, drum_index)"><i class="add fas fa-plus-circle"></i> {{drum.name}}</td>
 											</tr>
 										</table>
 									</div>

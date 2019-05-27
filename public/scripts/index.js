@@ -73,6 +73,9 @@ function Init()
         else if(message.msg === "create"){
             CreateDrum(message.name, message.file_path, message.drum_index);
         }
+        else if(message.msg === "remove"){
+            RemoveDrum(message.name, message.file_path, message.drum_index);
+        }
     };
 }
 
@@ -110,12 +113,16 @@ function ClickNode(row_index, node_index){
 function SendCreateDrumMessage(name, file_path, index){ 
     ws.send(JSON.stringify({'msg': 'create', 'name': name, 'file_path': file_path, 'drum_index': index}));
 }
+function SendRemoveDrumMessage(name, file_path, index){
+    ws.send(JSON.stringify({'msg': 'remove', 'name': name, 'file_path': file_path, 'drum_index': index}));
+}
 
-function drum_row(name, audio_path){
+function drum_row(name, file_path){
     this.inst = name;
     this.nodes = [];
+    this.file_path = file_path;
     var sound = new Howl({
-        src: [audio_path]
+        src: [file_path]
     });
     //initialize elements to all false 
     //initialize all 16 cloned audio players
@@ -139,15 +146,19 @@ function ResetCurNote(){
     }
 }
 
-function CreateDrum(name, audio_path, index){
+function CreateDrum(name, file_path, index){
     //remove the element from avail_drums
     app.avail_drums.splice(index,1);
 
-    new_drum_row = new drum_row(name, audio_path);
+    new_drum_row = new drum_row(name, file_path);
     app.all_rows.push(new_drum_row);
 }
+function RemoveDrum(name, file_path, row_index){
+    app.all_rows.splice(row_index,1);
+    app.avail_drums.push({"name": name, "file_path": file_path});
+}
 
-function AddAudioElement(name, audio_path){
+function AddAudioElement(name, file_path){
     var audio_bay = document.getElementById('audio_bay');
     var new_player = document.createElement('audio');
     new_player.id = name+'_audio-player';
