@@ -70,6 +70,9 @@ function Init()
         else if(message.msg === "selected_pad"){
             app.all_rows[message.row_index].nodes[message.node_index].play =! app.all_rows[message.row_index].nodes[message.node_index].play;
         }
+        else if(message.msg === "create"){
+            CreateDrum(message.name, message.file_path, message.drum_index);
+        }
     };
 }
 
@@ -103,7 +106,9 @@ function Stop(){
 
 function ClickNode(row_index, node_index){
     ws.send(JSON.stringify({'msg': 'selected_pad', 'row_index': row_index, 'node_index': node_index}));
-    
+}
+function SendCreateDrumMessage(name, file_path, index){ 
+    ws.send(JSON.stringify({'msg': 'create', 'name': name, 'file_path': file_path, 'drum_index': index}));
 }
 
 function drum_row(name, audio_path){

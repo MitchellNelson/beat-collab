@@ -22,10 +22,10 @@
 	<div id="app">
 		<div id="center_column">
 			<div id="audio_bay"></div>
-				<table id="drum_table">
+				<table class="drum_table">
 					<tbody v-for="(drum_row, row_index) in all_rows">
 						<tr >
-							<td :class="{'inst': row_index!= 0}">{{drum_row.inst}}</td>
+							<td :class="{'inst': row_index!= 0, 'all_inst': true}">{{drum_row.inst}}</td>
 							<td
 							v-for="(node, node_index) in drum_row.nodes" 
 							@click="ClickNode(row_index, node_index)"
@@ -40,7 +40,7 @@
 									<div  v-if="add_drum_drop == true" v-for="(drum, drum_index) in avail_drums">
 										<table>
 											<tr>
-												<td @click="CreateDrum(drum.name, drum.file_path, drum_index)">{{drum.name}}</td>
+												<td :class="{'inst': drum_index!= 0, 'all_inst': true}" @click="SendCreateDrumMessage(drum.name, drum.file_path, drum_index)">+ {{drum.name}}</td>
 											</tr>
 										</table>
 									</div>
