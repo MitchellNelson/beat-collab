@@ -1,2 +1,2 @@
 # Colabortive Drum Machine
-Multi user approach to real-time music creation
+Multi user approach to real-time beat creation
