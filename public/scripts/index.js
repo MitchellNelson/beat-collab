@@ -1,6 +1,7 @@
 var ws;
 var app;
 var num_counts = 4;
+//
 function Init()
 {
 	app = new Vue({
@@ -14,8 +15,9 @@ function Init()
             playing: false,
             user_num:null,
             timer: null,
-            avail_drums:[],
-            add_drum_drop: false
+            avail_drums: [],
+            add_drum_drop: false,
+            room_id: Math.random().toString(36).substring(2,4) + Math.random().toString(36).substring(2,4)
         },
         watch: {
             bpm: function(){
@@ -52,7 +54,11 @@ function Init()
     //Websocket message handler
     ws.onopen = (event) => {
         console.log("Connection successful!");
+        ws.send(JSON.stringify({'msg': 'set_room', 'room_id': app.room_id}));
     };
+
+    
+
     ws.onmessage = (event) => {
     	var message = JSON.parse(event.data);
         console.log(message);
@@ -80,11 +86,11 @@ function Init()
 }
 
 function SendPlayMessage(){ 
-    ws.send(JSON.stringify({'msg': 'play'}));
+    ws.send(JSON.stringify({'msg': 'play', 'room_id': app.room_id}));
 }
 
 function SendStopMessage(){
-    ws.send(JSON.stringify({'msg': 'stop'}));
+    ws.send(JSON.stringify({'msg': 'stop', 'room_id': app.room_id}));
 }
 
 function Play(){
@@ -108,13 +114,13 @@ function Stop(){
 }
 
 function ClickNode(row_index, node_index){
-    ws.send(JSON.stringify({'msg': 'selected_pad', 'row_index': row_index, 'node_index': node_index}));
+    ws.send(JSON.stringify({'msg': 'selected_pad', 'room_id': app.room_id, 'row_index': row_index, 'node_index': node_index}));
 }
 function SendCreateDrumMessage(name, file_path, index){ 
-    ws.send(JSON.stringify({'msg': 'create', 'name': name, 'file_path': file_path, 'drum_index': index}));
+    ws.send(JSON.stringify({'msg': 'create', 'room_id': app.room_id,'name': name, 'file_path': file_path, 'drum_index': index}));
 }
 function SendRemoveDrumMessage(name, file_path, index){
-    ws.send(JSON.stringify({'msg': 'remove', 'name': name, 'file_path': file_path, 'drum_index': index}));
+    ws.send(JSON.stringify({'msg': 'remove', 'room_id': app.room_id, 'name': name, 'file_path': file_path, 'drum_index': index}));
 }
 
 function drum_row(name, file_path){

@@ -118,6 +118,10 @@ button:focus {outline:0;}
 	background-color: #f4f5f7;
 	color: black;
 }
+#room_id{
+	height: 1rem;
+	font-size: 1rem;
+}
 @media only screen and (max-width: 1000px){
 	#center_column{
 		margin: 0 .5rem 0 .5rem;
