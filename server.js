@@ -23,7 +23,7 @@ wss.on('connection', (ws) => {
         console.log('Message from ' + client_id + ': ' + message);
         
         if(parsed_message.msg == "set_room"){
-            SetRoom(client_id, parsed_message.room_id, ws);
+            SetRoom(client_id, parsed_message.new_room_id, ws);
         }
         else{
             Broadcast(message, parsed_message.room_id);           
@@ -33,28 +33,39 @@ wss.on('connection', (ws) => {
         var parsed_message = JSON.parse(message);
         console.log('Client disconnected: ' + client_id + message);
         var room;
-        for(room in rooms.clients){
-            delete room[client_id];
-        }
     });
 });
 
 function SetRoom(client_id, room_id, ws){
-    
+    //remove client from old room
+    for(var key in rooms){
+        var room = rooms[key];
+        if(room.hasOwnProperty('clients')){
+
+            if (client_id in room.clients)
+            {
+                console.log('DELETING')
+                delete room.clients[client_id];
+
+                //delete the whole room, if no other clients
+                if(room.clients.length == 0)
+                    delete room;
+            }
+        }
+    }
+
+    //add client to new room
     if(!rooms.hasOwnProperty(room_id)){
-        console.log("setting new room")
+        //setting new room
         var new_room = new Room(room_id);
         new_room.clients[client_id] = ws;
         rooms[room_id] = new_room;
-
-        console.log(rooms)
     }
     else{
-        console.log("room already exists, add client info to room");
-
+        //room already exists, add client info to room
         rooms[room_id].clients[client_id] = ws;
-        console.log(rooms)
     }
+    console.log(rooms);
 }
 
 function Broadcast(message, room_id){

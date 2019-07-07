@@ -54,7 +54,7 @@ function Init()
     //Websocket message handler
     ws.onopen = (event) => {
         console.log("Connection successful!");
-        ws.send(JSON.stringify({'msg': 'set_room', 'room_id': app.room_id}));
+        ws.send(JSON.stringify({'msg': 'set_room', 'new_room_id': app.room_id}));
     };
 
     
@@ -82,7 +82,13 @@ function Init()
         else if(message.msg === "remove"){
             RemoveDrum(message.name, message.file_path, message.drum_index);
         }
+
     };
+}
+
+function JoinRoom(){
+    ws.send(JSON.stringify({'msg': 'set_room', 'new_room_id': app.room_id}))
+
 }
 
 function SendPlayMessage(){ 
@@ -173,3 +179,6 @@ function AddAudioElement(name, file_path){
     return audio_bay.appendChild(new_player);
 }
 
+function SendState(){
+    ws.send(JSON.stringify({'all_rows': app.all_rows}));//, 'curr_note_index': app.curr_note_index, 'prev_note_index': app.prev_note_index,'bpm': app.bpm,'playing': app.playing,'avail_drums': app.avail_drums}));
+}
