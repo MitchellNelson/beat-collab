@@ -82,6 +82,18 @@ function Init()
         else if(message.msg === "remove"){
             RemoveDrum(message.name, message.file_path, message.drum_index);
         }
+        else if(message.msg === "send_state"){
+            SendState();
+        }
+        else if(message.msg === "state"){
+            var new_all_rows = JSON.parse(message.all_rows);
+            SetState(new_all_rows);
+            console.log(new_all_rows);
+            if(message.playing){
+                Play();
+            }
+            app.bpm = message.bpm;
+        }
 
     };
 }
@@ -126,7 +138,9 @@ function SendCreateDrumMessage(name, file_path, index){
     ws.send(JSON.stringify({'msg': 'create', 'room_id': app.room_id,'name': name, 'file_path': file_path, 'drum_index': index}));
 }
 function SendRemoveDrumMessage(name, file_path, index){
-    ws.send(JSON.stringify({'msg': 'remove', 'room_id': app.room_id, 'name': name, 'file_path': file_path, 'drum_index': index}));
+    if (add_drum_drop){
+        ws.send(JSON.stringify({'msg': 'remove', 'room_id': app.room_id, 'name': name, 'file_path': file_path, 'drum_index': index}));
+    }
 }
 
 function drum_row(name, file_path){
@@ -179,6 +193,33 @@ function AddAudioElement(name, file_path){
     return audio_bay.appendChild(new_player);
 }
 
-function SendState(){
-    ws.send(JSON.stringify({'all_rows': app.all_rows}));//, 'curr_note_index': app.curr_note_index, 'prev_note_index': app.prev_note_index,'bpm': app.bpm,'playing': app.playing,'avail_drums': app.avail_drums}));
+function SetState(new_all_rows){
+    for(var i = 0; i <new_all_rows.length; i++){
+        for(var j = 0; j<new_all_rows[i].nodes.length; j++){
+            app.all_rows[i].nodes[j].curr_note = new_all_rows[i].nodes[j].curr_note;
+            app.all_rows[i].nodes[j].play = new_all_rows[i].nodes[j].play;
+            app.all_rows[i].nodes[j].selected = new_all_rows[i].nodes[j].selected;
+        }
+    }
 }
+
+function SendState(){
+    var state = {'msg': 'state', 'room_id': app.room_id, 'all_rows': JSON.stringify(app.all_rows, getCircularReplacer()), 
+    'playing': app.playing, 'bpm': app.bpm};
+    console.log("sending state: " +  app.all_rows);
+    ws.send(JSON.stringify((state)));
+}
+
+const getCircularReplacer = () => {
+  const seen = new WeakSet();
+  return (key, value) => {
+    if (typeof value === "object" && value !== null) {
+      if (seen.has(value)) {
+        return;
+      }
+      seen.add(value);
+    }
+    return value;
+  };
+};
+
