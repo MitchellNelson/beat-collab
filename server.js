@@ -32,11 +32,12 @@ wss.on('connection', (ws) => {
     ws.on('close', (message) => {
         var parsed_message = JSON.parse(message);
         console.log('Client disconnected: ' + client_id + message);
-        var room;
+        DeleteClient(client_id);
+        console.log(rooms);
     });
 });
 
-function SetRoom(client_id, room_id, ws){
+function DeleteClient(client_id){
     //remove client from old room
     for(var key in rooms){
         var room = rooms[key];
@@ -53,6 +54,10 @@ function SetRoom(client_id, room_id, ws){
             }
         }
     }
+}
+
+function SetRoom(client_id, room_id, ws){
+    DeleteClient(client_id);
 
     //add client to new room
     if(!rooms.hasOwnProperty(room_id)){

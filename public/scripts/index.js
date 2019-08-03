@@ -57,8 +57,6 @@ function Init()
         ws.send(JSON.stringify({'msg': 'set_room', 'new_room_id': app.room_id}));
     };
 
-    
-
     ws.onmessage = (event) => {
     	var message = JSON.parse(event.data);
         console.log(message);
@@ -72,6 +70,15 @@ function Init()
         else if(message.msg === "stop"){
             app.playing = !app.playing;
             //Stop();
+        }
+        else if(message.msg === "clear"){
+            console.log('clearing!')
+            for (var i = 0; i<app.all_rows.length; i++){
+                for(var j = 0; j<num_counts * 4; j++){
+                    app.all_rows[i].nodes[j].selected=false;
+                    app.all_rows[i].nodes[j].play=false;
+                }
+            }
         }
         else if(message.msg === "selected_pad"){
             app.all_rows[message.row_index].nodes[message.node_index].play =! app.all_rows[message.row_index].nodes[message.node_index].play;
@@ -94,7 +101,6 @@ function Init()
             }
             app.bpm = message.bpm;
         }
-
     };
 }
 
@@ -109,6 +115,10 @@ function SendPlayMessage(){
 
 function SendStopMessage(){
     ws.send(JSON.stringify({'msg': 'stop', 'room_id': app.room_id}));
+}
+
+function SendClearMessage(){
+    ws.send(JSON.stringify({'msg': 'clear', 'room_id': app.room_id}));
 }
 
 function Play(){
@@ -134,9 +144,11 @@ function Stop(){
 function ClickNode(row_index, node_index){
     ws.send(JSON.stringify({'msg': 'selected_pad', 'room_id': app.room_id, 'row_index': row_index, 'node_index': node_index}));
 }
+
 function SendCreateDrumMessage(name, file_path, index){ 
     ws.send(JSON.stringify({'msg': 'create', 'room_id': app.room_id,'name': name, 'file_path': file_path, 'drum_index': index}));
 }
+
 function SendRemoveDrumMessage(name, file_path, index){
     if (add_drum_drop){
         ws.send(JSON.stringify({'msg': 'remove', 'room_id': app.room_id, 'name': name, 'file_path': file_path, 'drum_index': index}));
@@ -209,6 +221,16 @@ function SendState(){
     console.log("sending state: " +  app.all_rows);
     ws.send(JSON.stringify((state)));
 }
+
+function Clear()
+{
+    console.log('stop!!!');
+    if(app.playing){
+        SendStopMessage();
+    }
+    SendClearMessage();
+}
+
 
 const getCircularReplacer = () => {
   const seen = new WeakSet();
