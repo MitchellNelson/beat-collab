@@ -12,6 +12,7 @@ This project was inspired by my desire to make music with my friends while livin
 - [Node.js](https://nodejs.org/)
 - [WebSocket](https://www.websocket.org)
 - [Vue.js](https://vuejs.org)
+- [Howler.js](https://howlerjs.com)
 
 ## Features
 * Allows users to join a room with friends
