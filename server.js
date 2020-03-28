@@ -22,8 +22,8 @@ wss.on('connection', (ws) => {
         var parsed_message = JSON.parse(message);
         console.log('Message from ' + client_id + ': ' + message);
         
-        if(parsed_message.msg == "set_room"){
-            SetRoom(client_id, parsed_message.new_room_id, ws);
+        if (parsed_message.msg == "set_room"){
+            SetRoom(client_id, parsed_message.new_room_id, ws, parsed_message.username);
         }
         else{
             Broadcast(message, parsed_message.room_id);           
@@ -39,16 +39,16 @@ wss.on('connection', (ws) => {
 
 function DeleteClient(client_id){
     //remove client from old room
-    for(var key in rooms){
+    for (var key in rooms){
         var room = rooms[key];
-        if(room.hasOwnProperty('clients')){
+        if (room.hasOwnProperty('clients')){
             if (client_id in room.clients)
             {
                 console.log('DELETING')
                 delete room.clients[client_id];
 
                 //delete the whole room, if no other clients
-                if(isEmpty(room.clients)){
+                if (isEmpty(room.clients)){
                     delete rooms[key];
                 }
             }
@@ -56,11 +56,10 @@ function DeleteClient(client_id){
     }
 }
 
-function SetRoom(client_id, room_id, ws){
+function SetRoom(client_id, room_id, ws, username){
     DeleteClient(client_id);
-
     //add client to new room
-    if(!rooms.hasOwnProperty(room_id)){
+    if (!rooms.hasOwnProperty(room_id)){
         //setting new room
         var new_room = new Room(room_id, client_id);
         new_room.clients[client_id] = ws;
@@ -75,15 +74,16 @@ function SetRoom(client_id, room_id, ws){
         var request_state_message = JSON.stringify({'msg': 'send_state'});
         rooms[room_id].clients[host].send(request_state_message);
     }
-    console.log(rooms);
+    var username_message = JSON.stringify({'msg': 'new_user', 'username': username})
+    Broadcast(username_message, room_id);
 }
 
 function Broadcast(message, room_id){
 	var id;
     var curr_room = rooms[room_id];
-    if(curr_room.hasOwnProperty('clients')){
-    	for(id in curr_room.clients){
-    		if(curr_room.clients.hasOwnProperty(id)){
+    if (curr_room.hasOwnProperty('clients')){
+    	for (id in curr_room.clients){
+    		if (curr_room.clients.hasOwnProperty(id)){
     			curr_room.clients[id].send(message);
             }
     	}
@@ -97,7 +97,7 @@ function Room(id, host){
 }
 
 function isEmpty(map) {
-   for(var key in map) {
+   for (var key in map) {
      if (map.hasOwnProperty(key)) {
         return false;
      }

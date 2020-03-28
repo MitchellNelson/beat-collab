@@ -1,31 +1,56 @@
 var ws;
 var app;
 var num_counts = 4;
-//
+
+    Vue.component("modal", {
+        template: "#modal-template"
+    });
+
 function Init()
 {
+
 	app = new Vue({
 		el: "#app",
 		data: {
-            all_rows: [],
-            curr_selected:null,
-            curr_note_index:0,
-            prev_note_index:15,
-            bpm: 100,
-            playing: false,
-            user_num:null,
-            timer: null,
-            avail_drums: [],
-            add_drum_drop: false,
-            room_id: Math.random().toString(36).substring(2,4) + Math.random().toString(36).substring(2,4)
+            username:           "", 
+            room_users:         [],
+            all_rows:           [],
+            curr_selected:      null,
+            curr_note_index:    0,
+            prev_note_index:    15,
+            bpm:                100,
+            playing:            false,
+            user_num:           null,
+            timer:              null,
+            avail_drums:        [],
+            add_drum_drop:      false,
+            room_id:            GetRoomId(),
+            volume:             75,
+            show_modal:         true
         },
         watch: {
             bpm: function(){
-                Stop();
-                this.playing=false;
+                if (app.playing){
+                    Stop();
+                    app.playing = false;
+                    setTimeout(function(){ 
+                        //Play();
+                        console.log("In timout for playing after bpm change");
+                        app.playing = true;
+                        console.log("playing = " + app.playing);
+                    }, 100)
+                }
+                else {
+                    app.playing = false;
+                    Stop();
+                }
+                console.log("playing = " + app.playing);
+
+                //Play();
+                //this.playing = true;
             },
             playing: function(){
-                if(this.playing){
+                if (app.playing){
                     Play();
                 }
                 else{
@@ -35,17 +60,26 @@ function Init()
         }
 	});
 
-    CreateDrum("Kick", "../audio/Kick.mp3");
-    CreateDrum("Snare", "../audio/Snare.mp3");
-    CreateDrum("Hihat", "../audio/Hat.mp3");
-    //CreateDrum("Open Hihat", "../audio/OpenHat.mp3");
-    //CreateDrum("Tom", "../audio/Tom.mp3");
-    //CreateDrum("Floor Tom", "../audio/Floor.mp3");
+    CreateDrum("Kick", "../audio/Kick.wav");
+    CreateDrum("Snare", "../audio/Snare.wav");
+    CreateDrum("Hihat", "../audio/Hi Hat.wav");
+    CreateDrum("Open Hihat", "../audio/Open Hi Hat.wav");
+    CreateDrum("Tom", "../audio/Rack Tom.wav");
+    CreateDrum("Floor Tom", "../audio/Floor Tom.wav");
+    CreateDrum("Trap Hat", "../audio/Trap Hat.wav");
+    CreateDrum("Trap Open", "../audio/Trap Open.wav");
+    CreateDrum("Clap", "../audio/Clap.wav");
+    CreateDrum("Shaker", "../audio/Shake.wav");
+    CreateDrum("Clave", "../audio/Clave.wav");
+    CreateDrum("808", "../audio/808.wav");
 
-    app.avail_drums.push({"name": "Open Hihat", "file_path": "../audio/OpenHat.mp3"})
-    app.avail_drums.push({"name": "Tom", "file_path": "../audio/Tom.mp3"})
-    app.avail_drums.push({"name": "Floor Tom", "file_path": "../audio/Floor.mp3"})
 
+    /*app.avail_drums.push({"name": "Trap Hat", "file_path": "../audio/Trap Hat.wav"})
+    app.avail_drums.push({"name": "'Open Trap'", "file_path": "../audio/Trap Open.wav"})
+    app.avail_drums.push({"name": "Clap", "file_path": "../audio/Clap.wav"})
+    app.avail_drums.push({"name": "Shaker", "file_path": "../audio/Shake.wav"})
+    app.avail_drums.push({"name": "Clave", "file_path": "../audio/Clave.wav"})
+    app.avail_drums.push({"name": "808", "file_path": "../audio/808.wav"})*/
 
     //Websocket setup
     var port = window.location.port || "80";
@@ -60,53 +94,60 @@ function Init()
     ws.onmessage = (event) => {
     	var message = JSON.parse(event.data);
         console.log(message);
-		if(message.msg === "client_count"){
-            app.user_num=message.data;
+		if (message.msg === "client_count"){
+            app.user_num = message.data;
         }
-        else if(message.msg === "play"){
-            app.playing = !app.playing;
-            //Play();
+        else if (message.msg === "play"){
+            app.playing = true;
         }
-        else if(message.msg === "stop"){
-            app.playing = !app.playing;
-            //Stop();
-        }
-        else if(message.msg === "clear"){
+        else if (message.msg === "stop"){
+            app.playing = false;
+        } 
+        else if (message.msg === "clear"){
             console.log('clearing!')
-            for (var i = 0; i<app.all_rows.length; i++){
-                for(var j = 0; j<num_counts * 4; j++){
-                    app.all_rows[i].nodes[j].selected=false;
-                    app.all_rows[i].nodes[j].play=false;
+            for (var i = 0; i < app.all_rows.length; i++){
+                for(var j = 0; j < num_counts * 4; j++){
+                    app.all_rows[i].nodes[j].selected = false;
+                    app.all_rows[i].nodes[j].play = false;
                 }
             }
         }
-        else if(message.msg === "selected_pad"){
-            app.all_rows[message.row_index].nodes[message.node_index].play =! app.all_rows[message.row_index].nodes[message.node_index].play;
+        else if (message.msg === "selected_pad"){
+            var play_status = app.all_rows[message.row_index].nodes[message.node_index].play;
+            app.all_rows[message.row_index].nodes[message.node_index].play =! play_status;
         }
-        else if(message.msg === "create"){
+        else if (message.msg === "create"){
             CreateDrum(message.name, message.file_path, message.drum_index);
         }
-        else if(message.msg === "remove"){
+        else if (message.msg === "remove"){
             RemoveDrum(message.name, message.file_path, message.drum_index);
         }
-        else if(message.msg === "send_state"){
+        else if (message.msg === "send_state"){
             SendState();
+            app.playing = false;
+            Stop();
         }
-        else if(message.msg === "state"){
+        else if (message.msg === 'new_user'){
+            app.room_users.push(message.username);
+            console.log(message.username)
+        }
+        else if (message.msg === "state"){
+            app.room_users = message.room_users;
             var new_all_rows = JSON.parse(message.all_rows);
             SetState(new_all_rows);
-            console.log(new_all_rows);
-            if(message.playing){
-                Play();
-            }
             app.bpm = message.bpm;
+            app.playing = false;
+            Stop();
         }
     };
 }
 
-function JoinRoom(){
-    ws.send(JSON.stringify({'msg': 'set_room', 'new_room_id': app.room_id}))
+function GetRoomId(){
+    return Math.random().toString(36).substring(2,4) + Math.random().toString(36).substring(2,4);
+}
 
+function JoinRoom(){
+    ws.send(JSON.stringify({'msg': 'set_room', 'new_room_id': app.room_id, 'username': app.username}))
 }
 
 function SendPlayMessage(){ 
@@ -121,38 +162,45 @@ function SendClearMessage(){
     ws.send(JSON.stringify({'msg': 'clear', 'room_id': app.room_id}));
 }
 
+function ClickNode(row_index, node_index){
+    ws.send(JSON.stringify({'msg': 'selected_pad', 'room_id': app.room_id, 'row_index': row_index, 
+                            'node_index': node_index}));
+}
+
+function SendCreateDrumMessage(name, file_path, index){ 
+    ws.send(JSON.stringify({'msg': 'create', 'room_id': app.room_id,'name': name, 'file_path': file_path, 
+                            'drum_index': index}));
+}
+
+function SendRemoveDrumMessage(name, file_path, index){
+    if (app.add_drum_drop){
+        ws.send(JSON.stringify({'msg': 'remove', 'room_id': app.room_id, 'name': name, 'file_path': file_path, 
+                                'drum_index': index}));
+    }
+}
+
 function Play(){
-    app.timer = new interval(60000/app.bpm/4, function(){
-        for(var j = 0; j<app.all_rows.length; j++){
-            if(app.all_rows[j].nodes[app.curr_note_index].play == true ){
+    app.timer = new interval((60000 / app.bpm) / 4, function(){
+        for (var j = 0; j < app.all_rows.length; j++){
+            if (app.all_rows[j].nodes[app.curr_note_index].play == true ){
+                //set volume - divide by 100 becuase html range sliders are int only 
+                app.all_rows[j].nodes[app.curr_note_index].audio_element.volume(app.volume / 100);
                 app.all_rows[j].nodes[app.curr_note_index].audio_element.play();
             }
             app.all_rows[j].nodes[app.curr_note_index].curr_note = true;
             app.all_rows[j].nodes[app.prev_note_index].curr_note = false;
         }
-        app.prev_note_index=app.curr_note_index;
+        app.prev_note_index = app.curr_note_index;
         app.curr_note_index = (app.curr_note_index + 1) % 16;
     })
-    app.timer.run();
+    setTimeout(function(){ app.timer.run(); }, 10);
 }
 
 function Stop(){
-    app.timer.stop();
-    ResetCurNote();
-}
-
-function ClickNode(row_index, node_index){
-    ws.send(JSON.stringify({'msg': 'selected_pad', 'room_id': app.room_id, 'row_index': row_index, 'node_index': node_index}));
-}
-
-function SendCreateDrumMessage(name, file_path, index){ 
-    ws.send(JSON.stringify({'msg': 'create', 'room_id': app.room_id,'name': name, 'file_path': file_path, 'drum_index': index}));
-}
-
-function SendRemoveDrumMessage(name, file_path, index){
-    if (add_drum_drop){
-        ws.send(JSON.stringify({'msg': 'remove', 'room_id': app.room_id, 'name': name, 'file_path': file_path, 'drum_index': index}));
+    if (app.timer != undefined){
+        app.timer.stop();
     }
+    ResetCurNote();
 }
 
 function drum_row(name, file_path){
@@ -164,8 +212,7 @@ function drum_row(name, file_path){
     });
     //initialize elements to all false 
     //initialize all 16 cloned audio players
-    var i;
-    for(i = 0; i<num_counts * 4; i++){
+    for (var i = 0; i < num_counts * 4; i++){
         var node_entry = {curr_note: false, selected: false, play: false, audio_element: sound};
         this.nodes.push(node_entry);
     }
@@ -175,10 +222,9 @@ function ResetCurNote(){
     clearTimeout();
     app.curr_note_index = 0;
     app.prev_note_index = 15;
-    var i;
-    for(i = 0; i<app.all_rows.length; i++){
-        var j;
-        for(j = 0; j<num_counts * 4; j++){
+
+    for (var i = 0; i < app.all_rows.length; i++){
+        for (var j = 0; j < num_counts * 4; j++){
             app.all_rows[i].nodes[j].curr_note = false;
         }
     }
@@ -191,23 +237,15 @@ function CreateDrum(name, file_path, index){
     new_drum_row = new drum_row(name, file_path);
     app.all_rows.push(new_drum_row);
 }
+
 function RemoveDrum(name, file_path, row_index){
     app.all_rows.splice(row_index,1);
     app.avail_drums.push({"name": name, "file_path": file_path});
 }
 
-function AddAudioElement(name, file_path){
-    var audio_bay = document.getElementById('audio_bay');
-    var new_player = document.createElement('audio');
-    new_player.id = name+'_audio-player';
-    new_player.src = audio_path;
-    new_player.type = 'audio/mpeg';
-    return audio_bay.appendChild(new_player);
-}
-
 function SetState(new_all_rows){
-    for(var i = 0; i <new_all_rows.length; i++){
-        for(var j = 0; j<new_all_rows[i].nodes.length; j++){
+    for (var i = 0; i < new_all_rows.length; i++){
+        for (var j = 0; j < new_all_rows[i].nodes.length; j++){
             app.all_rows[i].nodes[j].curr_note = new_all_rows[i].nodes[j].curr_note;
             app.all_rows[i].nodes[j].play = new_all_rows[i].nodes[j].play;
             app.all_rows[i].nodes[j].selected = new_all_rows[i].nodes[j].selected;
@@ -216,8 +254,8 @@ function SetState(new_all_rows){
 }
 
 function SendState(){
-    var state = {'msg': 'state', 'room_id': app.room_id, 'all_rows': JSON.stringify(app.all_rows, getCircularReplacer()), 
-    'playing': app.playing, 'bpm': app.bpm};
+    var state = {'msg': 'state', 'room_id': app.room_id, room_users: app.room_users, 'all_rows': JSON.stringify(app.all_rows, getCircularReplacer()), 
+    'playing': false, 'bpm': app.bpm};
     console.log("sending state: " +  app.all_rows);
     ws.send(JSON.stringify((state)));
 }
@@ -225,12 +263,11 @@ function SendState(){
 function Clear()
 {
     console.log('stop!!!');
-    if(app.playing){
+    if (app.playing){
         SendStopMessage();
     }
     SendClearMessage();
 }
-
 
 const getCircularReplacer = () => {
   const seen = new WeakSet();
@@ -243,5 +280,4 @@ const getCircularReplacer = () => {
     }
     return value;
   };
-};
-
+}; 
