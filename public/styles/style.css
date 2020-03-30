@@ -229,7 +229,6 @@ input:focus, textarea:focus, select:focus{
 	font-size: 1rem;
 }
 #new_message{
-	
 	height: 1rem;
 	size:1rem;
 	margin: 0;
@@ -240,7 +239,7 @@ input:focus, textarea:focus, select:focus{
 		padding:0;
 	}
 	.chat{
-		width: 100%;
+		width: 90vw;
 		max-width: 100%;
 	}
 }

@@ -150,9 +150,10 @@ function GetRoomId(){
 }
 
 function SubmitUsername(){
-    console.log("calling submit username");
-    ws.send(JSON.stringify({'msg': 'submit_username', 'room_id': app.room_id, 'username': app.username}))
-    app.show_modal = false;
+    if (app.username.length > 0){
+        ws.send(JSON.stringify({'msg': 'submit_username', 'room_id': app.room_id, 'username': app.username}))
+        app.show_modal = false;
+    }
 }
 
 function JoinRoom(){
