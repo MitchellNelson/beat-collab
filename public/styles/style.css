@@ -11,12 +11,22 @@ body{
 	right: 0;
 	height: 100%;
 	width: 100%;
+	align-content: center;
 }
 table{
 	border-spacing: 2px;
-}
-button:focus {outline:0;}
 
+}
+button:focus {
+	outline:0;
+}
+input:focus, textarea:focus, select:focus{
+    outline: none;
+}
+.nav{
+
+
+}
 .modal-mask {
   position: fixed;
   z-index: 9998;
@@ -69,19 +79,50 @@ button:focus {outline:0;}
 }
 #center_column{
 	margin: 0 2rem 0 2rem;
-	background-color: white;
 	padding:1em;
 }
+.chat{
+	margin: 0;
+	width: 20rem;
+}
+.break{
+	flex-basis: 100%;
+  height: 0;
+}
+.messages{
+	background-color: #f4f5f7;
+	width: 100%;
+	min-height: 10rem;
+	max-height: 20rem;
+	word-wrap: break-word;
+	text-align: right;
+	overflow: auto;
+}
+.message{
+	width:100%;
+	word-wrap: break-word;
+	padding-top: .5rem;
+}
+.sender{
+	font-size: .5rem;
+	color:red;
+	font-style: italic;
+}
+.message_content{
+	font-size: 1rem;
+	word-wrap: break-word;
+}
 .drum_table{
-	margin-bottom: 1em;
+	
 }
 .controls{
+	background-color: #ffffff;
 	padding-top: 1em;
 	border-top:2px solid #555555;
 }
 .control_items{
 	display: inline-block;
-	margin: 0 2rem 0 2rem; 
+	margin: 1 2rem 1 2rem; 
 }
 .inst{
 	height: 100%;
@@ -105,7 +146,7 @@ button:focus {outline:0;}
 	color: #85d372;
 }
 .pads{
-	width:4rem;
+	width:3rem;
 	height: 3rem;
 	background-color: #576377;
 	border: 2px solid #576377;
@@ -152,6 +193,13 @@ button:focus {outline:0;}
 	background: #faaf4f;
 	cursor: pointer;
 }
+.dash_items{
+	display:inline-table;
+	margin:.5rem;
+	align-content: center;
+	background-color: #ffffff;
+	padding:.5rem;
+}
 .buttons {
 	background-color: #555555;
 	padding:1rem;
@@ -166,6 +214,7 @@ button:focus {outline:0;}
 	transition-duration: 0.1s;
 	cursor: pointer;
 	color: white;
+	border: none;
 }
 .buttons:hover {
 	background-color: #f4f5f7;
@@ -179,8 +228,19 @@ button:focus {outline:0;}
 	height: 1rem;
 	font-size: 1rem;
 }
+#new_message{
+	
+	height: 1rem;
+	size:1rem;
+	margin: 0;
+}
 @media only screen and (max-width: 1000px){
 	#center_column{
-		margin: 0 .5rem 0 .5rem;
+		margin: 0;
+		padding:0;
+	}
+	.chat{
+		width: 100%;
+		max-width: 100%;
 	}
 }

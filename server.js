@@ -20,10 +20,13 @@ wss.on('connection', (ws) => {
 
     ws.on('message', (message) => {
         var parsed_message = JSON.parse(message);
-        console.log('Message from ' + client_id + ': ' + message);
-        
-        if (parsed_message.msg == "set_room"){
+        //console.log('Message from ' + client_id + ': ' + message);
+        console.log(rooms);
+        if (parsed_message.msg === "set_room"){
             SetRoom(client_id, parsed_message.new_room_id, ws, parsed_message.username);
+        }
+        else if(parsed_message.msg === 'submit_username'){
+            SetUsername(client_id, parsed_message.room_id, parsed_message.username)
         }
         else{
             Broadcast(message, parsed_message.room_id);           
@@ -46,6 +49,7 @@ function DeleteClient(client_id){
             {
                 console.log('DELETING')
                 delete room.clients[client_id];
+                delete room.usernames[client_id];
 
                 //delete the whole room, if no other clients
                 if (isEmpty(room.clients)){
@@ -73,9 +77,21 @@ function SetRoom(client_id, room_id, ws, username){
         var host = rooms[room_id].host;
         var request_state_message = JSON.stringify({'msg': 'send_state'});
         rooms[room_id].clients[host].send(request_state_message);
+        var join_message = JSON.stringify({'msg': 'chat', 
+            'sender': username + " has joined the room", 'content': ""});
+        rooms[room_id].usernames[client_id] = username;
+        Broadcast(join_message, room_id);
     }
-    var username_message = JSON.stringify({'msg': 'new_user', 'username': username})
-    Broadcast(username_message, room_id);
+    var username_message = JSON.stringify({'msg': 'new_user', 'username': username});
+    Broadcast(username_message, room_id); 
+}   
+
+function SetUsername(client_id, room_id, username){
+    console.log("setting username: " + username);
+    rooms[room_id].usernames[client_id] = username;
+    var join_message = JSON.stringify({'msg': 'chat', 
+        'sender': username + " has joined the room", 'content': ""});
+    Broadcast(join_message, room_id);
 }
 
 function Broadcast(message, room_id){
@@ -92,6 +108,7 @@ function Broadcast(message, room_id){
 
 function Room(id, host){
     this.clients = {};
+    this.usernames = {};
     this.room_id = id;
     this.host = host;
 }

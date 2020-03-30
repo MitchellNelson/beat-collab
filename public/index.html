@@ -21,83 +21,110 @@
               </div>
               <div class="modal-footer">
                 <slot name="footer">
-                	
                 </slot>
-                <button class="buttons" @click="$emit('close')">OK</button>
+                <button class="buttons" @click=SubmitUsername()>OK</button>
               </div>
             </div>
           </div>
         </div>
       </transition>
     </script>
-    <script type="application/javascript" src="scripts/index.js"></script>=
+    <script type="application/javascript" src="scripts/index.js"></script>
 </head>
 <body onload="Init()">
 	<div id="app">
-		<div id="center_column">
-      		<modal v-if="show_modal" @close="show_modal = false && username.size > 0">
-       			<h3 slot="header">Pick a Username</h3>
-        		<span slot="footer" class="control_items">
-					<input id="username" type="text" v-model="username" size="12" id="username">
-				</span>
-      		</modal>
-			<div id="audio_bay"></div>
-				<table class="drum_table">
-					<tbody v-for="(drum_row, row_index) in all_rows">
-						<tr>
-							<td @click="SendRemoveDrumMessage(drum_row.inst, drum_row.file_path, row_index)" :class="{'inst': row_index!= 0, 'all_inst': true}">
-								<span v-if="add_drum_drop == true" >
-									<i class="remove fas fa-minus-circle"></i>
-								</span>
-								{{drum_row.inst}}
-							</td>
-							<td v-for="(node, node_index) in drum_row.nodes" 
-							    @click="ClickNode(row_index, node_index)"
-							    :class="{ 'pads': true, 'pads-selected': node.selected == true, 'pads-play': node.play == true, 'curr_note': node.curr_note==true, 'down_beats': node_index%4==0}">
-							</td>
-						</tr>
-						<tr v-if="row_index == all_rows.length-1 && avail_drums.length > 0">
-							<td>
-								<div>
-									<button class="buttons" @click="add_drum_drop = !add_drum_drop" v-if="add_drum_drop == true">-</button>
-									<button class="buttons" @click="add_drum_drop = !add_drum_drop" v-else>+</button>
-									<div v-if="add_drum_drop == true" v-for="(drum, drum_index) in avail_drums">
-										<table>
-											<tr>
-												<td :class="{'inst': drum_index!= 0, 'all_inst': true}" @click="SendCreateDrumMessage(drum.name, drum.file_path, drum_index); console.log('yup')"><i class="add fas fa-plus-circle"></i> {{drum.name}}</td>
-											</tr>
-										</table>
-									</div>
-								</div>
-							</td>
-						</tr>
-					</tbody>
-				</table>
+		<div class="nav">
+			<span>
 				<center>
-					<div class="controls">
-						<span class="control_items">
-							Room: <input type="text" min="0" max="9999" v-model="room_id" size="4" id="room_id">
-							<button @click="JoinRoom()" class="buttons">Join</button>
-						</span>
-						<span class="control_items">
-							BPM: {{bpm}} <input type="range" min="1" max="200" v-model="bpm" class="slider">
-						</span>
-						<span class="control_items">
-							Volume: {{volume}} <input type="range" min="0" max="100" v-model="volume" class="slider">
-						</span>
-						<span class="control_items">
-							<button @click="SendStopMessage()" v-if="playing==true" class="buttons">
-								<i class="fas fa-stop"></i>
-							</button>
-							<button @click="SendPlayMessage()" v-if="playing==false" class="buttons">
-								<i class="fas fa-play"></i>
-							</button>
-							<button @click="Clear()" class="buttons">Clear</button>
-						</span>
-					</div>
+					<h1>Drum-Colab</h1>
 				</center>
-			</div>
+			</span>
 		</div>
+		<center>
+			<div id="center_column">
+	      		<modal v-if="show_modal">
+	       			<h3 slot="header">Pick a Username</h3>
+	        		<span slot="footer" class="control_items">
+						<input id="username" type="text" v-on:keyup.enter="SubmitUsername()" v-model="username" size="12" id="username">
+					</span>
+	      		</modal>
+				<span class="dash_items">
+					<table class="drum_table">
+						<tbody v-for="(drum_row, row_index) in all_rows">
+							<tr>
+								<td @click="SendRemoveDrumMessage(drum_row.inst, drum_row.file_path, row_index)" :class="{'inst': row_index!= 0, 'all_inst': true}">
+									<span v-if="add_drum_drop == true" >
+										<i class="remove fas fa-minus-circle"></i>
+									</span>
+									{{drum_row.inst}}
+								</td>
+								<td v-for="(node, node_index) in drum_row.nodes" 
+								    @click="ClickNode(row_index, node_index)"
+								    :class="{ 'pads': true, 'pads-selected': node.selected == true, 'pads-play': node.play == true, 'curr_note': node.curr_note==true, 'down_beats': node_index%4==0}">
+								</td>
+							</tr>
+							<tr v-if="row_index == all_rows.length-1 && avail_drums.length > 0">
+								<td>
+									<div>
+										<button class="buttons" @click="add_drum_drop = !add_drum_drop" v-if="add_drum_drop == true">-</button>
+										<button class="buttons" @click="add_drum_drop = !add_drum_drop" v-else>+</button>
+										<div v-if="add_drum_drop == true" v-for="(drum, drum_index) in avail_drums">
+											<table>
+												<tr>
+													<td :class="{'inst': drum_index!= 0, 'all_inst': true}" @click="SendCreateDrumMessage(drum.name, drum.file_path, drum_index); console.log('yup')"><i class="add fas fa-plus-circle"></i> {{drum.name}}</td>
+												</tr>
+											</table>
+										</div>
+									</div>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+					<center>
+						<div class="controls">
+							<span class="control_items">
+								Room: <input type="text" min="0" max="9999" v-on:keyup.enter="JoinRoom()" v-model="room_id" size="5" id="room_id">
+								<button @click="JoinRoom()" class="buttons">Join</button>
+							</span>
+							<span class="control_items">
+								BPM: {{bpm}} <input type="range" min="1" max="200" v-model="bpm" class="slider">
+							</span>
+							<span class="control_items">
+								Volume: {{volume}} <input type="range" min="0" max="100" v-model="volume" class="slider">
+							</span>
+							<span class="control_items">
+								<button v-on:keyup.space="SendStopMessage()" @click="SendStopMessage()" v-if="playing==true" class="buttons">
+									<i class="fas fa-stop"></i>
+								</button>
+								<button v-on:keyup.space="SendPlayMessage()" @click="SendPlayMessage()" v-if="playing==false" class="buttons">
+									<i class="fas fa-play"></i>
+								</button>
+								<button @click="Clear()" class="buttons">Clear</button>
+							</span>
+						</div>
+					</center>
+				</span>
+				<span class="dash_items">
+					<div class="chat">
+						<h2>Messaging</h2>
+						<div class="messages" >
+							<div v-for="message in messages" class="message">
+								<div class="message_content">{{message.message_content}}</div>
+								<div class="sender">{{message.sender}}</div>
+							</div>
+						</div>
+						<center>
+							<div class="controls">
+								<span class="control_items">
+									<input type="text" v-model="new_message" v-on:keyup.enter="SendMessage()" id="new_message">
+									<button @click="SendMessage()" class="buttons" sytle="float:right">Send</button>
+								</span>
+							</div>
+						</center>
+					</div>
+				</span>
+			</div>
+		</center>
 	</div>
 </body>
 </html>

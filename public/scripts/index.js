@@ -14,6 +14,8 @@ function Init()
 		data: {
             username:           "", 
             room_users:         [],
+            messages:           [],
+            new_message:        "",
             all_rows:           [],
             curr_selected:      null,
             curr_note_index:    0,
@@ -34,20 +36,13 @@ function Init()
                     Stop();
                     app.playing = false;
                     setTimeout(function(){ 
-                        //Play();
-                        console.log("In timout for playing after bpm change");
                         app.playing = true;
-                        console.log("playing = " + app.playing);
                     }, 100)
                 }
                 else {
                     app.playing = false;
                     Stop();
                 }
-                console.log("playing = " + app.playing);
-
-                //Play();
-                //this.playing = true;
             },
             playing: function(){
                 if (app.playing){
@@ -91,6 +86,11 @@ function Init()
         ws.send(JSON.stringify({'msg': 'set_room', 'new_room_id': app.room_id}));
     };
 
+    ws.onclose =(event) => {
+        ws.send(JSON.stringify({'msg': 'chat', 'room_id': app.room_id, 
+            'sender': app.username + " has left the room", 'content': ""}));
+    }
+
     ws.onmessage = (event) => {
     	var message = JSON.parse(event.data);
         console.log(message);
@@ -131,6 +131,9 @@ function Init()
             app.room_users.push(message.username);
             console.log(message.username)
         }
+        else if(message.msg === 'chat'){
+            app.messages.push(new chat_item(message.sender, message.content))
+        }
         else if (message.msg === "state"){
             app.room_users = message.room_users;
             var new_all_rows = JSON.parse(message.all_rows);
@@ -146,8 +149,15 @@ function GetRoomId(){
     return Math.random().toString(36).substring(2,4) + Math.random().toString(36).substring(2,4);
 }
 
+function SubmitUsername(){
+    console.log("calling submit username");
+    ws.send(JSON.stringify({'msg': 'submit_username', 'room_id': app.room_id, 'username': app.username}))
+    app.show_modal = false;
+}
+
 function JoinRoom(){
-    ws.send(JSON.stringify({'msg': 'set_room', 'new_room_id': app.room_id, 'username': app.username}))
+    ws.send(JSON.stringify({'msg': 'set_room', 'new_room_id': app.room_id, 'username': app.username}));
+    app.messages = [];
 }
 
 function SendPlayMessage(){ 
@@ -177,6 +187,12 @@ function SendRemoveDrumMessage(name, file_path, index){
         ws.send(JSON.stringify({'msg': 'remove', 'room_id': app.room_id, 'name': name, 'file_path': file_path, 
                                 'drum_index': index}));
     }
+}
+
+function SendMessage(){
+    ws.send(JSON.stringify({'msg': 'chat', 'room_id': app.room_id, 
+        'content': app.new_message, 'sender': app.username}));
+    app.new_message = "";
 }
 
 function Play(){
@@ -216,6 +232,11 @@ function drum_row(name, file_path){
         var node_entry = {curr_note: false, selected: false, play: false, audio_element: sound};
         this.nodes.push(node_entry);
     }
+}
+
+function chat_item(sender, message_content){
+    this.sender = sender;
+    this.message_content = message_content
 }
 
 function ResetCurNote(){
