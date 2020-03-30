@@ -1,4 +1,4 @@
-## drum-machine
+## beat-colab
 Collaborative music creator that gives multiple users the power to create a drum beat in real time without being in the same room. 
 
 ## Motivation
