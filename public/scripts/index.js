@@ -115,6 +115,12 @@ function Init()
         else if (message.msg === "selected_pad"){
             var play_status = app.all_rows[message.row_index].nodes[message.node_index].play;
             app.all_rows[message.row_index].nodes[message.node_index].play =! play_status;
+            if (play_status){
+                app.all_rows[message.row_index].nodes[message.node_index].selected = "";
+            }
+            else{
+                app.all_rows[message.row_index].nodes[message.node_index].selected = message.selection_value;
+            }
         }
         else if (message.msg === "create"){
             CreateDrum(message.name, message.file_path, message.drum_index);
@@ -175,7 +181,7 @@ function SendClearMessage(){
 
 function ClickNode(row_index, node_index){
     ws.send(JSON.stringify({'msg': 'selected_pad', 'room_id': app.room_id, 'row_index': row_index, 
-                            'node_index': node_index}));
+                            'node_index': node_index, 'selection_value': app.username[0]}));
 }
 
 function SendCreateDrumMessage(name, file_path, index){ 
@@ -230,7 +236,7 @@ function drum_row(name, file_path){
     //initialize elements to all false 
     //initialize all 16 cloned audio players
     for (var i = 0; i < num_counts * 4; i++){
-        var node_entry = {curr_note: false, selected: false, play: false, audio_element: sound};
+        var node_entry = {curr_note: false, selected: "", play: false, audio_element: sound};
         this.nodes.push(node_entry);
     }
 }

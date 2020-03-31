@@ -61,6 +61,7 @@
 								<td v-for="(node, node_index) in drum_row.nodes" 
 								    @click="ClickNode(row_index, node_index)"
 								    :class="{ 'pads': true, 'pads-selected': node.selected == true, 'pads-play': node.play == true, 'curr_note': node.curr_note==true, 'down_beats': node_index%4==0}">
+								    	<center><span class="noselect">{{node.selected}}</span></center>
 								</td>
 							</tr>
 							<tr v-if="row_index == all_rows.length-1 && avail_drums.length > 0">

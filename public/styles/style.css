@@ -71,14 +71,22 @@ input:focus, textarea:focus, select:focus{
 .modal-leave-active {
   opacity: .5;
 }
-
+.noselect {
+  -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+     -khtml-user-select: none; /* Konqueror HTML */
+       -moz-user-select: none; /* Old versions of Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none; /* Non-prefixed version, currently
+                                  supported by Chrome, Opera and Firefox */
+}
 .modal-enter .modal-container,
 .modal-leave-active .modal-container {
   -webkit-transform: scale(1.1);
   transform: scale(1.1);
 }
 #center_column{
-	margin: 0 2rem 0 2rem;
+	margin: 0;
 	padding:1em;
 }
 .chat{
@@ -146,10 +154,13 @@ input:focus, textarea:focus, select:focus{
 	color: #85d372;
 }
 .pads{
+	max-width:3rem;
 	width:3rem;
 	height: 3rem;
 	background-color: #576377;
 	border: 2px solid #576377;
+    font-size: 100%;
+    overflow-wrap: all;
 }
 .pads:hover {
 	opacity: .8;
