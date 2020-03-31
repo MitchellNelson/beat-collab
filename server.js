@@ -6,7 +6,7 @@ var WebSocket = require('ws');
 var timesyncServer = require('timesync/server');
 var app = express();
 var server = http.createServer(app);
-var port = 8098;
+var port = 5000;
 
 var public_dir = path.join(__dirname, 'public');
 
