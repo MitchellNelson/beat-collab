@@ -253,4 +253,8 @@ input:focus, textarea:focus, select:focus{
 		width: 90vw;
 		max-width: 100%;
 	}
+    .modal-container {
+        width:50%;
+        font-size:3rem;
+    }
 }

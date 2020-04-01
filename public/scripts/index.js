@@ -107,7 +107,7 @@ function Init()
             console.log('clearing!')
             for (var i = 0; i < app.all_rows.length; i++){
                 for(var j = 0; j < num_counts * 4; j++){
-                    app.all_rows[i].nodes[j].selected = false;
+                    app.all_rows[i].nodes[j].selected = "";
                     app.all_rows[i].nodes[j].play = false;
                 }
             }
@@ -169,14 +169,20 @@ function JoinRoom(){
 
 function SendPlayMessage(){ 
     ws.send(JSON.stringify({'msg': 'play', 'room_id': app.room_id}));
+    ws.send(JSON.stringify({'msg': 'chat', 'room_id': app.room_id, 'content': '',
+	                    'sender':app.username + ' has Played the Beat'}));
 }
 
 function SendStopMessage(){
     ws.send(JSON.stringify({'msg': 'stop', 'room_id': app.room_id}));
+    ws.send(JSON.stringify({'msg': 'chat', 'room_id': app.room_id, 'content': '',
+	                    'sender':app.username + ' has Stopped the Beat'}));
 }
 
 function SendClearMessage(){
     ws.send(JSON.stringify({'msg': 'clear', 'room_id': app.room_id}));
+    ws.send(JSON.stringify({'msg': 'chat', 'room_id': app.room_id, 'content': '',
+	                    'sender':app.username + ' has Cleared the Beat'}));
 }
 
 function ClickNode(row_index, node_index){
