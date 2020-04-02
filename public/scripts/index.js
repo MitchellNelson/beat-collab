@@ -6,13 +6,13 @@ var num_counts = 4;
         template: "#modal-template"
     });
 
-function Init()
-{
+function Init(){
+    document.getElementById("app").style.display = "none";
 	app = new Vue({
 		el: "#app",
 		data: {
             username:           "", 
-            selected_user_color:"#d975bb",
+            selected_user_color:"#9dd975",
             user_colors:        ["#9dd975", "#75d9d4", "#757cd9", "#d975bb", "#d97575", "#d99575", ],
             room_users:         [],
             messages:           [],
@@ -139,6 +139,8 @@ function Init()
             Stop();
         }
     };
+    document.getElementById("app").style.display = "block";
+    document.getElementById("loader").style.display = "none";
 }
 
 function GetRoomId(){
