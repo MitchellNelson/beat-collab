@@ -7,7 +7,6 @@ var num_counts = 4;
     });
 
 function Init(){
-    document.getElementById("app").style.display = "none";
 	app = new Vue({
 		el: "#app",
 		data: {
@@ -139,8 +138,6 @@ function Init(){
             Stop();
         }
     };
-    document.getElementById("app").style.display = "block";
-    document.getElementById("loader").style.display = "none";
 }
 
 function GetRoomId(){
