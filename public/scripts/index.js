@@ -130,7 +130,11 @@ function Init(){
             app.room_users.push(message.username);
         }
         else if(message.msg === 'chat'){
-            app.messages.push(new chat_item(message.sender, message.content))
+            app.messages.push(new chat_item(message.sender, message.content));
+            setTimeout(function(){
+                ScrollToEnd();
+            }, 100);
+            
         }
         else if (message.msg === "state"){
             app.room_users = message.room_users;
@@ -200,9 +204,11 @@ function SelectColor(color){
 }
 
 function SendMessage(){
-    ws.send(JSON.stringify({'msg': 'chat', 'room_id': app.room_id, 
-        'content': app.new_message, 'sender': app.username}));
-    app.new_message = "";
+    if (app.new_message.length > 0){
+        ws.send(JSON.stringify({'msg': 'chat', 'room_id': app.room_id, 
+            'content': app.new_message, 'sender': app.username}));
+        app.new_message = "";
+    }
 }
 
 function Play(){
@@ -223,6 +229,11 @@ function ResetTimer(){
     app.prev_note_index = app.curr_note_index;
     app.curr_note_index = (app.curr_note_index + 1) % (4 * app.num_counts);
     });
+}
+
+function ScrollToEnd() {       
+    var container = document.getElementsByClassName("messages");
+    container[0].scrollTop = container[0].scrollHeight;
 }
 
 function Stop(){
