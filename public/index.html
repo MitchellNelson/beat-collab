@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Drum Machine</title>
+  <title>Beat Colab</title>
   <link rel="stylesheet" href="styles/style.css"/>
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css" integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay" crossorigin="anonymous">
-  <script type="application/javascript" src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+  <!--<script type="application/javascript" src="https://code.jquery.com/jquery-3.3.1.min.js"></script>-->
   <script type="application/javascript" src="https://cdn.jsdelivr.net/npm/vue"></script>
   <script type="application/javascript" src="scripts/interval.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.1.2/howler.core.min.js"></script>
@@ -22,7 +22,6 @@
               <div class="modal-footer">
                 <slot name="footer">
                 </slot>
-                <button class="buttons" @click=SubmitUsername()>OK</button>
               </div>
             </div>
           </div>
@@ -43,9 +42,23 @@
 		<center>
 			<div id="center_column">
 	      		<modal v-if="show_modal">
-	       			<h3 slot="header">Pick a Username</h3>
+	       			<h3 slot="header">Welcome</h3>
 	        		<span slot="footer" class="control_items">
-						<input id="username" type="text" v-on:keyup.enter="SubmitUsername()" v-model="username" size="12" id="username">
+	        			<table>
+	        				<tr>
+	        					Nickname:
+	        					<input id="username" type="text" v-on:keyup.enter="SubmitUsername()" v-model="username" size="12" id="username">
+	        				</tr>
+							<tr>
+								<td>
+									Color:
+								</td>
+								<td v-for="user_color in user_colors" class="pads user_colors" v-bind:style="{backgroundColor: user_color}" @click="SelectColor(user_color)"
+								:class="{'selected_user_color': user_color == selected_user_color}">
+								</td>
+							</tr>
+						</table>
+						<button class="buttons" @click=SubmitUsername()>Get Started</button>
 					</span>
 	      		</modal>
 				<span class="dash_items">
@@ -59,6 +72,7 @@
 									{{drum_row.inst}}
 								</td>
 								<td v-for="(node, node_index) in drum_row.nodes" 
+									v-bind:style="{backgroundColor: node.color, borderColor: node.color}"
 								    @click="ClickNode(row_index, node_index)"
 								    :class="{ 'pads': true, 'pads-selected': node.selected == true, 'pads-play': node.play == true, 'curr_note': node.curr_note==true, 'down_beats': node_index%4==0}">
 								    	<center><span class="noselect">{{node.selected}}</span></center>

@@ -8,11 +8,12 @@ var num_counts = 4;
 
 function Init()
 {
-
 	app = new Vue({
 		el: "#app",
 		data: {
             username:           "", 
+            selected_user_color:"#d975bb",
+            user_colors:        ["#9dd975", "#75d9d4", "#757cd9", "#d975bb", "#d97575", "#d99575", ],
             room_users:         [],
             messages:           [],
             new_message:        "",
@@ -62,21 +63,12 @@ function Init()
     CreateDrum("Clave", "../audio/Clave.wav");
     CreateDrum("808", "../audio/808.wav");
 
-
-    /*app.avail_drums.push({"name": "Trap Hat", "file_path": "../audio/Trap Hat.wav"})
-    app.avail_drums.push({"name": "'Open Trap'", "file_path": "../audio/Trap Open.wav"})
-    app.avail_drums.push({"name": "Clap", "file_path": "../audio/Clap.wav"})
-    app.avail_drums.push({"name": "Shaker", "file_path": "../audio/Shake.wav"})
-    app.avail_drums.push({"name": "Clave", "file_path": "../audio/Clave.wav"})
-    app.avail_drums.push({"name": "808", "file_path": "../audio/808.wav"})*/
-
     //Websocket setup
     var port = window.location.port || "80";
     ws = new WebSocket("ws://" + window.location.hostname + ":" + port);
 
     //Websocket message handler
     ws.onopen = (event) => {
-        console.log("Connection successful!");
         ws.send(JSON.stringify({'msg': 'set_room', 'new_room_id': app.room_id}));
     };
 
@@ -89,7 +81,6 @@ function Init()
 
     ws.onmessage = (event) => {
     	var message = JSON.parse(event.data);
-        console.log(message);
 		if (message.msg === "client_count"){
             app.user_num = message.data;
         }
@@ -100,22 +91,26 @@ function Init()
             app.playing = false;
         } 
         else if (message.msg === "clear"){
-            console.log('clearing!')
             for (var i = 0; i < app.all_rows.length; i++){
                 for(var j = 0; j < num_counts * 4; j++){
-                    app.all_rows[i].nodes[j].selected = "";
-                    app.all_rows[i].nodes[j].play = false;
+                    var node = app.all_rows[i].nodes[j]
+                    node.selected = "";
+                    node.play = false;
+                    node.color = "";
                 }
             }
         }
         else if (message.msg === "selected_pad"){
             var play_status = app.all_rows[message.row_index].nodes[message.node_index].play;
             app.all_rows[message.row_index].nodes[message.node_index].play =! play_status;
+            var node = app.all_rows[message.row_index].nodes[message.node_index]
             if (play_status){
-                app.all_rows[message.row_index].nodes[message.node_index].selected = " ";
+                node.selected = " ";
+                node.color = "";
             }
             else{
-                app.all_rows[message.row_index].nodes[message.node_index].selected = message.selection_value;
+                node.selected = message.selection_value;
+                node.color = message.color;
             }
         }
         else if (message.msg === "create"){
@@ -131,7 +126,6 @@ function Init()
         }
         else if (message.msg === 'new_user'){
             app.room_users.push(message.username);
-            console.log(message.username)
         }
         else if(message.msg === 'chat'){
             app.messages.push(new chat_item(message.sender, message.content))
@@ -183,7 +177,7 @@ function SendClearMessage(){
 
 function ClickNode(row_index, node_index){
     ws.send(JSON.stringify({'msg': 'selected_pad', 'room_id': app.room_id, 'row_index': row_index, 
-                            'node_index': node_index, 'selection_value': app.username[0]}));
+                            'node_index': node_index, 'selection_value': app.username[0], 'color': app.selected_user_color}));
 }
 
 function SendCreateDrumMessage(name, file_path, index){ 
@@ -198,6 +192,11 @@ function SendRemoveDrumMessage(name, file_path, index){
     }
 }
 
+function SelectColor(color){
+    console.log(color);
+    app.selected_user_color = color;
+}
+
 function SendMessage(){
     ws.send(JSON.stringify({'msg': 'chat', 'room_id': app.room_id, 
         'content': app.new_message, 'sender': app.username}));
@@ -205,19 +204,6 @@ function SendMessage(){
 }
 
 function Play(){
-    /*app.timer = new interval((60000 / app.bpm) / 4, function(){
-        for (var j = 0; j < app.all_rows.length; j++){
-            if (app.all_rows[j].nodes[app.curr_note_index].play == true ){
-                //set volume - divide by 100 becuase html range sliders are int only 
-                app.all_rows[j].nodes[app.curr_note_index].audio_element.volume(app.volume / 100);
-                app.all_rows[j].nodes[app.curr_note_index].audio_element.play();
-            }
-            app.all_rows[j].nodes[app.curr_note_index].curr_note = true;
-            app.all_rows[j].nodes[app.prev_note_index].curr_note = false;
-        }
-        app.prev_note_index = app.curr_note_index;
-        app.curr_note_index = (app.curr_note_index + 1) % 16;
-    });*/
     app.timer.run();
 }
 
@@ -255,7 +241,7 @@ function drum_row(name, file_path){
     //initialize elements to all false 
     //initialize all 16 cloned audio players
     for (var i = 0; i < num_counts * 4; i++){
-        var node_entry = {curr_note: false, selected: " ", play: false, audio_element: sound};
+        var node_entry = {curr_note: false, color: "", selected: " ", play: false, audio_element: sound};
         this.nodes.push(node_entry);
     }
 }
@@ -266,7 +252,6 @@ function chat_item(sender, message_content){
 }
 
 function ResetCurNote(){
-    //clearTimeout();
     app.curr_note_index = 0;
     app.prev_note_index = 15;
 
@@ -296,6 +281,7 @@ function SetState(new_all_rows){
             app.all_rows[i].nodes[j].curr_note = new_all_rows[i].nodes[j].curr_note;
             app.all_rows[i].nodes[j].play = new_all_rows[i].nodes[j].play;
             app.all_rows[i].nodes[j].selected = new_all_rows[i].nodes[j].selected;
+            app.all_rows[i].nodes[j].color = new_all_rows[i].nodes[j].color;
         }
     }
 }
@@ -303,7 +289,6 @@ function SetState(new_all_rows){
 function SendState(){
     var state = {'msg': 'state', 'room_id': app.room_id, room_users: app.room_users, 'all_rows': JSON.stringify(app.all_rows, getCircularReplacer()), 
     'playing': false, 'bpm': app.bpm};
-    console.log("sending state: " +  app.all_rows);
     ws.send(JSON.stringify((state)));
 }
 

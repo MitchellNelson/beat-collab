@@ -16,12 +16,9 @@ var wss = new WebSocket.Server({server: server});
 var rooms = {};
 wss.on('connection', (ws) => {
     var client_id = ws._socket.remoteAddress + ":" + ws._socket.remotePort;
-    console.log('New connection: ' + client_id);
-
     ws.on('message', (message) => {
         var parsed_message = JSON.parse(message);
         //console.log('Message from ' + client_id + ': ' + message);
-        console.log(rooms);
         if (parsed_message.msg === "set_room"){
             SetRoom(client_id, parsed_message.new_room_id, ws, parsed_message.username);
         }
@@ -34,9 +31,12 @@ wss.on('connection', (ws) => {
     });
     ws.on('close', (message) => {
         var parsed_message = JSON.parse(message);
-        console.log('Client disconnected: ' + client_id + message);
+        var username = GetUserName(client_id);
+        var room_id = GetRoomID(client_id);
+        var leave_message = JSON.stringify({'msg': 'chat', 
+            'sender': username + " has left the room", 'content': ""});
+        Broadcast(leave_message, room_id);
         DeleteClient(client_id);
-        console.log(rooms);
     });
 });
 
@@ -47,7 +47,6 @@ function DeleteClient(client_id){
         if (room.hasOwnProperty('clients')){
             if (client_id in room.clients)
             {
-                console.log('DELETING')
                 delete room.clients[client_id];
                 delete room.usernames[client_id];
 
@@ -55,6 +54,28 @@ function DeleteClient(client_id){
                 if (isEmpty(room.clients)){
                     delete rooms[key];
                 }
+            }
+        }
+    }
+}
+
+function GetUserName(client_id){
+    for (var key in rooms){
+        var room = rooms[key];
+        if (room.hasOwnProperty('clients')){
+            if (client_id in room.clients){
+                return room.usernames[client_id];
+            }
+        }
+    }
+}
+
+function GetRoomID(client_id){
+    for (var key in rooms){
+        var room = rooms[key];
+        if (room.hasOwnProperty('clients')){
+            if (client_id in room.clients){
+                return room.room_id;
             }
         }
     }
@@ -87,7 +108,6 @@ function SetRoom(client_id, room_id, ws, username){
 }   
 
 function SetUsername(client_id, room_id, username){
-    console.log("setting username: " + username);
     rooms[room_id].usernames[client_id] = username;
     var join_message = JSON.stringify({'msg': 'chat', 
         'sender': username + " has joined the room", 'content': ""});

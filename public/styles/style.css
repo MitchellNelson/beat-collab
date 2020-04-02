@@ -73,11 +73,11 @@ input:focus, textarea:focus, select:focus{
 }
 .noselect {
   -webkit-touch-callout: none; /* iOS Safari */
-    -webkit-user-select: none; /* Safari */
-     -khtml-user-select: none; /* Konqueror HTML */
-       -moz-user-select: none; /* Old versions of Firefox */
-        -ms-user-select: none; /* Internet Explorer/Edge */
-            user-select: none; /* Non-prefixed version, currently
+  -webkit-user-select: none; /* Safari */
+  -khtml-user-select: none; /* Konqueror HTML */
+  -moz-user-select: none; /* Old versions of Firefox */
+  -ms-user-select: none; /* Internet Explorer/Edge */
+  user-select: none; /* Non-prefixed version, currently
                                   supported by Chrome, Opera and Firefox */
 }
 .modal-enter .modal-container,
@@ -110,15 +110,19 @@ input:focus, textarea:focus, select:focus{
 	width:100%;
 	word-wrap: break-word;
 	padding-top: .5rem;
+
 }
 .sender{
 	font-size: .5rem;
 	color:red;
 	font-style: italic;
+	margin:0 .5rem .5rem 0;
+
 }
 .message_content{
 	font-size: 1rem;
 	word-wrap: break-word;
+	margin:0 .5rem 0 0;
 }
 .drum_table{
 	
@@ -167,6 +171,12 @@ input:focus, textarea:focus, select:focus{
 }
 .down_beats{
 	background-color: #454f60;
+}
+.user_colors{
+	border: 2px solid #ffffff;
+}
+.selected_user_color{
+	border-color: black;
 }
 .pads-play{
 	background-color: #faaf4f;
@@ -236,8 +246,8 @@ input:focus, textarea:focus, select:focus{
 	font-size: 1rem;
 }
 #username{
-	height: 1rem;
-	font-size: 1rem;
+	height: 1.5rem;
+	font-size: 1.5rem;
 }
 #new_message{
 	height: 1rem;
@@ -254,7 +264,7 @@ input:focus, textarea:focus, select:focus{
 		max-width: 100%;
 	}
     .modal-container {
-        width:50%;
-        font-size:3rem;
+        width:75%;
+        font-size:2rem;
     }
 }
