@@ -1,6 +1,5 @@
 var ws;
 var app;
-var num_counts = 4;
 
     Vue.component("modal", {
         template: "#modal-template"
@@ -10,25 +9,26 @@ function Init(){
 	app = new Vue({
 		el: "#app",
 		data: {
-            username:           "", 
-            selected_user_color:"#9dd975",
-            user_colors:        ["#9dd975", "#75d9d4", "#757cd9", "#d975bb", "#d97575", "#d99575", ],
-            room_users:         [],
-            messages:           [],
-            new_message:        "",
-            all_rows:           [],
-            curr_selected:      null,
-            curr_note_index:    0,
-            prev_note_index:    15,
-            bpm:                120,
-            playing:            false,
-            user_num:           null,
-            timer:              null,
-            avail_drums:        [],
-            add_drum_drop:      false,
-            room_id:            GetRoomId(),
-            volume:             75,
-            show_modal:         true
+            username:            "", 
+            user_colors:         ["#9dd975", "#75d9d4", "#757cd9", "#d975bb", "#d97575", "#d99575", ],
+            selected_user_color: "",
+            room_users:          [],
+            messages:            [],
+            new_message:         "",
+            num_counts:          8,
+            all_rows:            [],
+            curr_selected:       null,
+            curr_note_index:     0,
+            prev_note_index:     15,
+            bpm:                 120,
+            playing:             false,
+            user_num:            null,
+            timer:               null,
+            avail_drums:         [],
+            add_drum_drop:       false,
+            room_id:             GetRoomId(),
+            volume:              75,
+            show_modal:          true
         },
         watch: {
             bpm: function(){
@@ -62,6 +62,9 @@ function Init(){
     CreateDrum("Clave", "../audio/Clave.wav");
     CreateDrum("808", "../audio/808.wav");
 
+    // Pick random default color from options
+    app.selected_user_color = app.user_colors[Math.floor(Math.random() * Math.floor(app.user_colors.length))]
+
     //Websocket setup
     var port = window.location.port || "80";
     ws = new WebSocket("ws://" + window.location.hostname + ":" + port);
@@ -91,7 +94,7 @@ function Init(){
         } 
         else if (message.msg === "clear"){
             for (var i = 0; i < app.all_rows.length; i++){
-                for(var j = 0; j < num_counts * 4; j++){
+                for(var j = 0; j < app.num_counts * 4; j++){
                     var node = app.all_rows[i].nodes[j]
                     node.selected = "";
                     node.play = false;
@@ -218,7 +221,7 @@ function ResetTimer(){
         app.all_rows[j].nodes[app.prev_note_index].curr_note = false;
     }
     app.prev_note_index = app.curr_note_index;
-    app.curr_note_index = (app.curr_note_index + 1) % 16;
+    app.curr_note_index = (app.curr_note_index + 1) % (4 * app.num_counts);
     });
 }
 
@@ -239,7 +242,7 @@ function drum_row(name, file_path){
     });
     //initialize elements to all false 
     //initialize all 16 cloned audio players
-    for (var i = 0; i < num_counts * 4; i++){
+    for (var i = 0; i < app.num_counts * 4; i++){
         var node_entry = {curr_note: false, color: "", selected: " ", play: false, audio_element: sound};
         this.nodes.push(node_entry);
     }
@@ -255,7 +258,7 @@ function ResetCurNote(){
     app.prev_note_index = 15;
 
     for (var i = 0; i < app.all_rows.length; i++){
-        for (var j = 0; j < num_counts * 4; j++){
+        for (var j = 0; j < app.num_counts * 4; j++){
             app.all_rows[i].nodes[j].curr_note = false;
         }
     }
