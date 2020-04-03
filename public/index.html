@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Beat Colab</title>
+  <title>Beat Collab</title>
   <link rel="stylesheet" href="styles/style.css"/>
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css" integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay" crossorigin="anonymous">
   <!--<script type="application/javascript" src="https://code.jquery.com/jquery-3.3.1.min.js"></script>-->
@@ -35,7 +35,7 @@
 		<div class="nav">
 			<span>
 				<center>
-					<h1>Beat-Colab</h1>
+					<h1>Beat-Collab</h1>
 				</center>
 			</span>
 		</div>
@@ -98,44 +98,46 @@
 					<center>
 						<div class="controls">
 							<span class="control_items">
-								Room: <input type="text" min="0" max="9999" v-on:keyup.enter="JoinRoom()" v-model="room_id" size="5" id="room_id">
-								<button @click="JoinRoom()" class="buttons">Join</button>
-							</span>
-							<span class="control_items">
-								BPM: {{bpm}} <input type="range" min="1" max="200" v-model="bpm" class="slider">
-							</span>
-							<span class="control_items">
-								Volume: {{volume}} <input type="range" min="0" max="100" v-model="volume" class="slider">
-							</span>
-							<span class="control_items">
 								<button v-on:keyup.space="SendStopMessage()" @click="SendStopMessage()" v-if="playing==true" class="buttons">
 									<i class="fas fa-stop"></i>
 								</button>
 								<button v-on:keyup.space="SendPlayMessage()" @click="SendPlayMessage()" v-if="playing==false" class="buttons">
 									<i class="fas fa-play"></i>
 								</button>
+								
+							</span>
+							<span class="control_items">
+								BPM<input type="range" min="1" max="200" v-model="bpm" class="slider">{{bpm}}
+							</span>
+							<span class="control_items">
+								Volume<input type="range" min="0" max="100" v-model="volume" class="slider">{{volume}}
+							</span>
+							<span class="control_items">
 								<button @click="Clear()" class="buttons">Clear</button>
 							</span>
+							
 						</div>
 					</center>
 				</span>
 				<span class="dash_items">
+					<span class="control_items">
+						Room: <input type="text" min="0" max="9999" v-on:keyup.enter="JoinRoom()" v-model="room_id" size="5" id="room_id">
+						<button @click="JoinRoom()" class="buttons" id="join_room_button">Join</button>
+					</span>
 					<div class="chat">
-						<h2>Messaging</h2>
 						<div class="messages" >
-							<div v-for="message in messages" class="message">
+							<div v-for="message in messages" class="message"
+								:class="{message_from_me: message.sender == username, 
+										 message_not_from_me: message.sender != username}"
+										 v-bind:style="{borderColor: message.color}">
 								<div class="message_content">{{message.message_content}}</div>
-								<div class="sender">{{message.sender}}</div>
+								<div v-if="message.sender != username" class="sender">{{message.sender}}</div>
 							</div>
 						</div>
-						<center>
-							<div class="controls">
-								<span class="control_items">
-									<input type="text" v-model="new_message" v-on:keyup.enter="SendMessage()" id="new_message">
-									<button @click="SendMessage()" class="buttons" sytle="float:right">Send</button>
-								</span>
-							</div>
-						</center>
+						<span>	
+							<input type="text" v-model="new_message" v-on:keyup.enter="SendMessage()" id="new_message">
+							<button @click="SendMessage()" class="buttons input_buttons" sytle="float:right"><i class="fas fa-play"></i></button>
+						</span>
 					</div>
 				</span>
 			</div>

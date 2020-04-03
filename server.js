@@ -7,6 +7,7 @@ var timesyncServer = require('timesync/server');
 var app = express();
 var server = http.createServer(app);
 var port = 5000;
+var chat_color = '#4cb178';
 
 var public_dir = path.join(__dirname, 'public');
 
@@ -34,7 +35,7 @@ wss.on('connection', (ws) => {
         var username = GetUserName(client_id);
         var room_id = GetRoomID(client_id);
         var leave_message = JSON.stringify({'msg': 'chat', 
-            'sender': username + " has left the room", 'content': ""});
+            'sender': username + " has left the room", 'content': "", 'color': chat_color});
         Broadcast(leave_message, room_id);
         DeleteClient(client_id);
     });
@@ -99,7 +100,7 @@ function SetRoom(client_id, room_id, ws, username){
         var request_state_message = JSON.stringify({'msg': 'send_state'});
         rooms[room_id].clients[host].send(request_state_message);
         var join_message = JSON.stringify({'msg': 'chat', 
-            'sender': username + " has joined the room", 'content': ""});
+            'sender': username + " has joined the room", 'content': "", 'color': chat_color});
         rooms[room_id].usernames[client_id] = username;
         Broadcast(join_message, room_id);
     }
@@ -110,7 +111,7 @@ function SetRoom(client_id, room_id, ws, username){
 function SetUsername(client_id, room_id, username){
     rooms[room_id].usernames[client_id] = username;
     var join_message = JSON.stringify({'msg': 'chat', 
-        'sender': username + " has joined the room", 'content': ""});
+        'sender': username + " has joined the room", 'content': "", 'color': chat_color});
     Broadcast(join_message, room_id);
 }
 

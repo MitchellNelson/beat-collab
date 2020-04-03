@@ -1,5 +1,6 @@
 var ws;
 var app;
+var chat_color = '#4cb178';
 
     Vue.component("modal", {
         template: "#modal-template"
@@ -76,7 +77,7 @@ function Init(){
 
     ws.onclose =(event) => {
         ws.send(JSON.stringify({'msg': 'chat', 'room_id': app.room_id, 
-            'sender': app.username + " has left the room", 'content': ""}));
+            'sender': app.username + " has left the room", 'content': "", 'color': 'red'}));
     }
 
     ResetTimer();
@@ -130,7 +131,7 @@ function Init(){
             app.room_users.push(message.username);
         }
         else if(message.msg === 'chat'){
-            app.messages.push(new chat_item(message.sender, message.content));
+            app.messages.push(new chat_item(message.sender, message.content, message.color));
             setTimeout(function(){
                 ScrollToEnd();
             }, 100);
@@ -166,19 +167,19 @@ function JoinRoom(){
 function SendPlayMessage(){ 
     ws.send(JSON.stringify({'msg': 'play', 'room_id': app.room_id}));
     ws.send(JSON.stringify({'msg': 'chat', 'room_id': app.room_id, 'content': '',
-	                    'sender':app.username + ' has Played the Beat'}));
+	                    'sender':app.username + ' has Played the Beat', 'color': chat_color}));
 }
 
 function SendStopMessage(){
     ws.send(JSON.stringify({'msg': 'stop', 'room_id': app.room_id}));
     ws.send(JSON.stringify({'msg': 'chat', 'room_id': app.room_id, 'content': '',
-	                    'sender':app.username + ' has Stopped the Beat'}));
+	                    'sender':app.username + ' has Stopped the Beat', 'color': chat_color}));
 }
 
 function SendClearMessage(){
     ws.send(JSON.stringify({'msg': 'clear', 'room_id': app.room_id}));
     ws.send(JSON.stringify({'msg': 'chat', 'room_id': app.room_id, 'content': '',
-	                    'sender':app.username + ' has Cleared the Beat'}));
+	                    'sender':app.username + ' has Cleared the Beat', 'color': chat_color}));
 }
 
 function ClickNode(row_index, node_index){
@@ -206,7 +207,7 @@ function SelectColor(color){
 function SendMessage(){
     if (app.new_message.length > 0){
         ws.send(JSON.stringify({'msg': 'chat', 'room_id': app.room_id, 
-            'content': app.new_message, 'sender': app.username}));
+            'content': app.new_message, 'sender': app.username, 'color': app.selected_user_color}));
         app.new_message = "";
     }
 }
@@ -259,9 +260,10 @@ function drum_row(name, file_path){
     }
 }
 
-function chat_item(sender, message_content){
+function chat_item(sender, message_content, color){
     this.sender = sender;
-    this.message_content = message_content
+    this.message_content = message_content;
+    this.color = color;
 }
 
 function ResetCurNote(){
