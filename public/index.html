@@ -3,6 +3,7 @@
 <head>
   <title>Beat Collab</title>
   <link rel="stylesheet" href="styles/style.css"/>
+  <link rel="shortcut icon" href="../images/logo.png">
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css" integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay" crossorigin="anonymous">
   <!--<script type="application/javascript" src="https://code.jquery.com/jquery-3.3.1.min.js"></script>-->
   <script type="application/javascript" src="https://cdn.jsdelivr.net/npm/vue"></script>
@@ -35,7 +36,7 @@
 		<div class="nav">
 			<span>
 				<center>
-					<h1>Beat-Collab</h1>
+					<img id="logo" src="../images/logo.png">
 				</center>
 			</span>
 		</div>
@@ -45,11 +46,11 @@
 	       			<h3 slot="header">Welcome</h3>
 	        		<span slot="footer" class="control_items">
 	        			<table>
-	        				<tr>
+	        				<tr class="control_items">
 	        					Nickname:
 	        					<input id="username" type="text" v-on:keyup.enter="SubmitUsername()" v-model="username" size="12" id="username">
 	        				</tr>
-							<tr>
+							<tr class="control_items">
 								<td>
 									Color:
 								</td>
@@ -58,7 +59,7 @@
 								</td>
 							</tr>
 						</table>
-						<button class="buttons" @click=SubmitUsername()>Get Started</button>
+						<button class="buttons control_items" @click=SubmitUsername()>Get Started</button>
 					</span>
 	      		</modal>
 				<span class="dash_items">
@@ -107,10 +108,14 @@
 								
 							</span>
 							<span class="control_items">
-								BPM<input type="range" min="1" max="200" v-model="bpm" class="slider">{{bpm}}
+								<span class="control_text">BPM</span>
+								<input type="range" min="1" max="200" v-model="bpm" class="slider">
+								<span class="control_text">{{bpm}}</span>
 							</span>
 							<span class="control_items">
-								Volume<input type="range" min="0" max="100" v-model="volume" class="slider">{{volume}}
+								<span class="control_text">Volume</span>
+								<input type="range" min="0" max="100" v-model="volume" class="slider">
+								<span class="control_text">{{volume}}</span>
 							</span>
 							<span class="control_items">
 								<button @click="Clear()" id="clear_button" class="buttons">Clear</button>
@@ -121,7 +126,8 @@
 				</span>
 				<span class="dash_items">
 					<span class="control_items">
-						Room<input type="text" min="0" max="9999" v-on:keyup.enter="JoinRoom()" v-model="room_id" size="5" id="room_id">
+						<span class="control_text">Room</span>
+						<input type="text" min="0" max="9999" v-on:keyup.enter="JoinRoom()" v-model="room_id" size="5" id="room_id">
 						<button @click="JoinRoom()" class="buttons" id="join_room_button">Join</button>
 					</span>
 					<div class="chat">
