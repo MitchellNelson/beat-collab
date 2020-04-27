@@ -189,13 +189,21 @@ input[type="text"], textarea{
 	border-top:2px solid #555555;;
 }
 .all_inst{
-	width: 2rem;
+	width: 3rem;
 	margin-bottom: 0;
 	height: 2.5rem;
+	padding-right: .5rem;
 }
 .all_inst:hover{
 	cursor: pointer;
 	opacity: .8;
+}
+.new_drums{
+	min-height: 20rem;
+	overflow: auto;
+	margin-bottom: 0;
+	height: 2.5rem;
+	padding-right: .5rem;
 }
 .remove{
 	color: #f2686c;
@@ -212,7 +220,7 @@ input[type="text"], textarea{
 .pads{
 	max-width:3rem;
 	min-width:1rem;
-	height: 2rem;
+	height: 1.5rem;
 	background-color: #576377;
 	border: none;
     font-size: 100%;
@@ -295,6 +303,10 @@ input[type="text"], textarea{
 .buttons:hover {
 	background-color: #f4f5f7;
 	color: black;
+}
+.preview_sound:hover {
+	color:var(--green);
+	cursor:pointer;
 }
 #logo{
 	width:40vw;

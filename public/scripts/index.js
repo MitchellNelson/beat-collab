@@ -17,7 +17,7 @@ function Init(){
             messages:            [],
             new_message:         "",
             num_counts:          8,
-            all_rows:            [],
+            all_rows:            {},
             curr_selected:       null,
             curr_note_index:     0,
             prev_note_index:     15,
@@ -49,19 +49,54 @@ function Init(){
             }
         }
 	});
+    //CreateDrum("")
+    CreateDrum("Kick1.wav","../audio/Kick1.wav");   
+    CreateDrum("Snare1.wav","../audio/Snare1.wav");
+    CreateDrum("Clap1.wav","../audio/Clap1.wav");
+    CreateDrum("Hi Hat1.wav","../audio/Hi Hat1.wav");
+    CreateDrum("Open Hihat.mp3","../audio/Open Hihat.mp3");
+    CreateDrum("Ride1.wav","../audio/Ride1.wav");
+    CreateDrum("Tamberine1.wav","../audio/Tamberine1.wav");
+    CreateDrum("Shaker1.wav","../audio/Shaker1.wav");
+    CreateDrum("Rim Click.mp3","../audio/Rim Click.mp3");
+    CreateDrum("Hi Tom.mp3","../audio/Hi Tom.mp3");
+    CreateDrum("Claves.mp3","../audio/Claves.mp3");
 
-    CreateDrum("Kick", "../audio/Kick.wav");
-    CreateDrum("Snare", "../audio/Snare.wav");
-    CreateDrum("Hihat", "../audio/Hi Hat.wav");
-    CreateDrum("Open Hihat", "../audio/Open Hi Hat.wav");
-    CreateDrum("Tom", "../audio/Rack Tom.wav");
-    CreateDrum("Floor Tom", "../audio/Floor Tom.wav");
-    CreateDrum("Trap Hat", "../audio/Trap Hat.wav");
-    CreateDrum("Trap Open", "../audio/Trap Open.wav");
-    CreateDrum("Clap", "../audio/Clap.wav");
-    CreateDrum("Shaker", "../audio/Shake.wav");
-    CreateDrum("Clave", "../audio/Clave.wav");
-    CreateDrum("808", "../audio/808.wav");
+    app.avail_drums.push({"name":"Kick2.wav","file_path":"../audio/Kick2.wav"});
+    app.avail_drums.push({"name":"Kick3.wav","file_path":"../audio/Kick3.wav"});
+    app.avail_drums.push({"name":"Kick4.wav","file_path":"../audio/Kick4.wav"});
+    app.avail_drums.push({"name":"Kick5.wav","file_path":"../audio/Kick5.wav"});
+    app.avail_drums.push({"name":"Deep Kick1.mp3","file_path":"../audio/Deep Kick1.mp3"});
+    app.avail_drums.push({"name":"Deep Kick2.mp3","file_path":"../audio/Deep Kick2.mp3"});
+    app.avail_drums.push({"name":"Snare2.wav","file_path":"../audio/Snare2.wav"});
+    app.avail_drums.push({"name":"Snare3.wav","file_path":"../audio/Snare3.wav"});
+    app.avail_drums.push({"name":"Snare4.wav","file_path":"../audio/Snare4.wav"});
+    app.avail_drums.push({"name":"Snare5.wav","file_path":"../audio/Snare5.wav"});
+    app.avail_drums.push({"name":"Snare6.mp3","file_path":"../audio/Snare6.mp3"});
+    app.avail_drums.push({"name":"Snare7.mp3","file_path":"../audio/Snare7.mp3"});
+    app.avail_drums.push({"name":"Hi Hat2.wav","file_path":"../audio/Hi Hat2.wav"});
+    app.avail_drums.push({"name":"Hi Hat3.wav","file_path":"../audio/Hi Hat3.wav"});
+    app.avail_drums.push({"name":"Hi Hat4.wav","file_path":"../audio/Hi Hat4.wav"});
+    app.avail_drums.push({"name":"Hi Hat5.wav","file_path":"../audio/Hi Hat5.wav"});
+    app.avail_drums.push({"name":"Ride2.wav","file_path":"../audio/Ride2.wav"});
+    app.avail_drums.push({"name":"Clap2.mp3","file_path":"../audio/Clap2.mp3"});
+    app.avail_drums.push({"name":"Impact.wav","file_path":"../audio/Impact.wav"});
+    app.avail_drums.push({"name":"Hi Conga.wav","file_path":"../audio/Hi Conga.wav"});
+    app.avail_drums.push({"name":"Scrape.wav","file_path":"../audio/Scrape.wav"});
+    app.avail_drums.push({"name":"Slap.mp3","file_path":"../audio/Slap.mp3"});
+    app.avail_drums.push({"name":"Shaker2.wav","file_path":"../audio/Shaker2.wav"});
+    app.avail_drums.push({"name":"Shaker3.mp3","file_path":"../audio/Shaker.mp3"});
+    app.avail_drums.push({"name":"Lock.wav","file_path":"../audio/Lock.wav"});
+    app.avail_drums.push({"name":"Crash1.wav","file_path":"../audio/Crash1.wav"});
+    app.avail_drums.push({"name":"Crash2.mp3","file_path":"../audio/Crash.mp3"});
+    app.avail_drums.push({"name":"conga1.mp3","file_path":"../audio/conga1.mp3"});
+    app.avail_drums.push({"name":"Perc.wav","file_path":"../audio/Perc.wav"});
+    app.avail_drums.push({"name":"Low Conga.wav","file_path":"../audio/Low Conga.wav"});
+    app.avail_drums.push({"name":"Deep Hit.wav","file_path":"../audio/Deep Hit.wav"});
+    app.avail_drums.push({"name":"Snap.wav","file_path":"../audio/Snap.wav"});
+    app.avail_drums.push({"name":"Drop.wav","file_path":"../audio/Drop.wav"});
+    app.avail_drums.push({"name":"Maracas.mp3","file_path":"../audio/Maracas.mp3"});
+
 
     // Pick random default color from options
     app.selected_user_color = app.user_colors[Math.floor(Math.random() * Math.floor(app.user_colors.length))]
@@ -94,9 +129,10 @@ function Init(){
             app.playing = false;
         } 
         else if (message.msg === "clear"){
-            for (var i = 0; i < app.all_rows.length; i++){
+            for (row in app.all_rows){
+                var drum_row = app.all_rows[row];
                 for(var j = 0; j < app.num_counts * 4; j++){
-                    var node = app.all_rows[i].nodes[j]
+                    var node = drum_row.nodes[j]
                     node.selected = "";
                     node.play = false;
                     node.color = "";
@@ -104,9 +140,10 @@ function Init(){
             }
         }
         else if (message.msg === "selected_pad"){
-            var play_status = app.all_rows[message.row_index].nodes[message.node_index].play;
-            app.all_rows[message.row_index].nodes[message.node_index].play =! play_status;
-            var node = app.all_rows[message.row_index].nodes[message.node_index]
+            var play_status = app.all_rows[message.row_name].nodes[message.node_index].play;
+            app.all_rows[message.row_name].nodes[message.node_index].play =! play_status;
+            var node = app.all_rows[message.row_name].nodes[message.node_index];
+            //console.log(node);
             if (play_status){
                 node.selected = " ";
                 node.color = "";
@@ -115,6 +152,7 @@ function Init(){
                 node.selected = message.selection_value;
                 node.color = message.color;
             }
+            console.log(app.all_rows[message.row_name].nodes[message.node_index]);
         }
         else if (message.msg === "create"){
             CreateDrum(message.name, message.file_path, message.drum_index);
@@ -182,9 +220,10 @@ function SendClearMessage(){
 	                    'sender':app.username + ' has Cleared the Beat', 'color': chat_color}));
 }
 
-function ClickNode(row_index, node_index){
-    ws.send(JSON.stringify({'msg': 'selected_pad', 'room_id': app.room_id, 'row_index': row_index, 
-                            'node_index': node_index, 'selection_value': app.username[0], 'color': app.selected_user_color}));
+function ClickNode(row_name, node_index){
+    ws.send(JSON.stringify({'msg': 'selected_pad', 'room_id': app.room_id, 'row_name': row_name, 
+                            'node_index': node_index, 'selection_value': app.username[0], 
+                            'color': app.selected_user_color}));
 }
 
 function SendCreateDrumMessage(name, file_path, index){ 
@@ -192,11 +231,24 @@ function SendCreateDrumMessage(name, file_path, index){
                             'drum_index': index}));
 }
 
-function SendRemoveDrumMessage(name, file_path, index){
+function SendRemoveDrumMessage(name, file_path, row_name){
     if (app.add_drum_drop){
         ws.send(JSON.stringify({'msg': 'remove', 'room_id': app.room_id, 'name': name, 'file_path': file_path, 
-                                'drum_index': index}));
+                                'drum_index': row_name}));
     }
+}
+
+function PreviewSound(row_name, index){
+    if (app.all_rows.hasOwnProperty(row_name)){
+        app.all_rows[row_name].nodes[0].audio_element.play();
+    }
+    else{
+        var file_path = app.avail_drums[index].file_path;
+        var sound = new Howl({
+            src: [file_path]
+        });
+        sound.play();
+    } 
 }
 
 function SelectColor(color){
@@ -218,14 +270,15 @@ function Play(){
 
 function ResetTimer(){
     app.timer = new interval((60000 / app.bpm) / 4, function(){
-    for (var j = 0; j < app.all_rows.length; j++){
-        if (app.all_rows[j].nodes[app.curr_note_index].play == true ){
+    for (row in app.all_rows){
+        var drum_row = app.all_rows[row];
+        if (drum_row.nodes[app.curr_note_index].play == true ){
             //set volume - divide by 100 becuase html range sliders are int only 
-            app.all_rows[j].nodes[app.curr_note_index].audio_element.volume(app.volume / 100);
-            app.all_rows[j].nodes[app.curr_note_index].audio_element.play();
+            drum_row.nodes[app.curr_note_index].audio_element.volume(app.volume / 100);
+            drum_row.nodes[app.curr_note_index].audio_element.play();
         }
-        app.all_rows[j].nodes[app.curr_note_index].curr_note = true;
-        app.all_rows[j].nodes[app.prev_note_index].curr_note = false;
+        drum_row.nodes[app.curr_note_index].curr_note = true;
+        drum_row.nodes[app.prev_note_index].curr_note = false;
     }
     app.prev_note_index = app.curr_note_index;
     app.curr_note_index = (app.curr_note_index + 1) % (4 * app.num_counts);
@@ -270,39 +323,67 @@ function ResetCurNote(){
     app.curr_note_index = 0;
     app.prev_note_index = 15;
 
-    for (var i = 0; i < app.all_rows.length; i++){
+    for (row in app.all_rows){
+        var drum_row = app.all_rows[row];
         for (var j = 0; j < app.num_counts * 4; j++){
-            app.all_rows[i].nodes[j].curr_note = false;
+            drum_row.nodes[j].curr_note = false;
         }
     }
 }
 
 function CreateDrum(name, file_path, index){
     //remove the element from avail_drums
+    if (index == undefined){
+        for(var i = 0; i < app.avail_drums.length; i++){
+            if (app.avail_drums[i].name == name){
+                index = i;
+                console.log("found!!");
+            }
+        }
+    }
     app.avail_drums.splice(index,1);
 
     new_drum_row = new drum_row(name, file_path);
-    app.all_rows.push(new_drum_row);
+    Vue.set(app.all_rows, name, new_drum_row);
+    //app.all_rows[name] = new_drum_row;ß
 }
 
 function RemoveDrum(name, file_path, row_index){
-    app.all_rows.splice(row_index,1);
+    delete(app.all_rows[name]);
+    //app.all_rows.splice(row_index,1);
     app.avail_drums.push({"name": name, "file_path": file_path});
 }
 
 function SetState(new_all_rows){
-    for (var i = 0; i < new_all_rows.length; i++){
-        for (var j = 0; j < new_all_rows[i].nodes.length; j++){
-            app.all_rows[i].nodes[j].curr_note = new_all_rows[i].nodes[j].curr_note;
-            app.all_rows[i].nodes[j].play = new_all_rows[i].nodes[j].play;
-            app.all_rows[i].nodes[j].selected = new_all_rows[i].nodes[j].selected;
-            app.all_rows[i].nodes[j].color = new_all_rows[i].nodes[j].color;
+    for (new_row in new_all_rows){
+        var new_drum_row = new_all_rows[new_row];
+        if (!app.all_rows.hasOwnProperty(new_row)){
+            CreateDrum(new_row,new_drum_row.file_path);
+            console.log(new_row);
+            console.log(new_drum_row.file_path)
+            console.log(app.all_rows);
+        }
+        for (var j = 0; j < new_drum_row.nodes.length; j++){
+            var node = app.all_rows[new_row].nodes[j];
+            var new_node = new_drum_row.nodes[j];
+            node.curr_note = new_node.curr_note;
+            node.play = new_node.play;
+            node.selected = new_node.selected;
+            node.color = new_node.color;
+        }
+    }
+    for (row in app.all_rows){
+        var drum_row = app.all_rows[row];
+        if (!new_all_rows.hasOwnProperty(row)){
+            RemoveDrum(row, drum_row.file_path);
         }
     }
 }
 
 function SendState(){
-    var state = {'msg': 'state', 'room_id': app.room_id, room_users: app.room_users, 'all_rows': JSON.stringify(app.all_rows, getCircularReplacer()), 
+    var state = {'msg': 'state', 'room_id': app.room_id, room_users: app.room_users, 
+    'all_rows': JSON.stringify(app.all_rows, getCircularReplacer()), 
+    'avail_drums': JSON.stringify(app.avail_drums, getCircularReplacer()),
     'playing': false, 'bpm': app.bpm};
     ws.send(JSON.stringify((state)));
 }
