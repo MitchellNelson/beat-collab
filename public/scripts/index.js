@@ -1,5 +1,6 @@
 var ws;
 var app;
+var audio_dir = "../audio/"
 var chat_color = '#4cb178';
 
     Vue.component("modal", {
@@ -11,7 +12,7 @@ function Init(){
 		el: "#app",
 		data: {
             username:            "", 
-            user_colors:         ["#9dd975", "#75d9d4", "#757cd9", "#d975bb", "#d97575", "#d99575", ],
+            user_colors:         ["#9dd975", "#75d9d4", "#757cd9", "#d975bb", "#d97575", "#d99575"],
             selected_user_color: "",
             room_users:          [],
             messages:            [],
@@ -97,7 +98,6 @@ function Init(){
     app.avail_drums.push({"name":"Drop.wav","file_path":"../audio/Drop.wav"});
     app.avail_drums.push({"name":"Maracas.mp3","file_path":"../audio/Maracas.mp3"});
 
-
     // Pick random default color from options
     app.selected_user_color = app.user_colors[Math.floor(Math.random() * Math.floor(app.user_colors.length))]
 
@@ -118,8 +118,13 @@ function Init(){
     ResetTimer();
 
     ws.onmessage = (event) => {
-    	var message = JSON.parse(event.data);
-		if (message.msg === "client_count"){
+        ProcessMessages(event);
+    };
+}
+
+function ProcessMessages(event){
+        var message = JSON.parse(event.data);
+        if (message.msg === "client_count"){
             app.user_num = message.data;
         }
         else if (message.msg === "play"){
@@ -183,7 +188,6 @@ function Init(){
             app.playing = false;
             Stop();
         }
-    };
 }
 
 function GetRoomId(){
@@ -205,19 +209,19 @@ function JoinRoom(){
 function SendPlayMessage(){ 
     ws.send(JSON.stringify({'msg': 'play', 'room_id': app.room_id}));
     ws.send(JSON.stringify({'msg': 'chat', 'room_id': app.room_id, 'content': '',
-	                    'sender':app.username + ' has Played the Beat', 'color': chat_color}));
+	                        'sender':app.username + ' has Played the Beat', 'color': chat_color}));
 }
 
 function SendStopMessage(){
     ws.send(JSON.stringify({'msg': 'stop', 'room_id': app.room_id}));
     ws.send(JSON.stringify({'msg': 'chat', 'room_id': app.room_id, 'content': '',
-	                    'sender':app.username + ' has Stopped the Beat', 'color': chat_color}));
+	                        'sender':app.username + ' has Stopped the Beat', 'color': chat_color}));
 }
 
 function SendClearMessage(){
     ws.send(JSON.stringify({'msg': 'clear', 'room_id': app.room_id}));
     ws.send(JSON.stringify({'msg': 'chat', 'room_id': app.room_id, 'content': '',
-	                    'sender':app.username + ' has Cleared the Beat', 'color': chat_color}));
+	                        'sender':app.username + ' has Cleared the Beat', 'color': chat_color}));
 }
 
 function ClickNode(row_name, node_index){
@@ -256,10 +260,11 @@ function SelectColor(color){
     app.selected_user_color = color;
 }
 
-function SendMessage(){
+function SendChat(){
     if (app.new_message.length > 0){
         ws.send(JSON.stringify({'msg': 'chat', 'room_id': app.room_id, 
-            'content': app.new_message, 'sender': app.username, 'color': app.selected_user_color}));
+                                'content': app.new_message, 'sender': app.username, 
+                                'color': app.selected_user_color}));
         app.new_message = "";
     }
 }
@@ -382,9 +387,9 @@ function SetState(new_all_rows){
 
 function SendState(){
     var state = {'msg': 'state', 'room_id': app.room_id, room_users: app.room_users, 
-    'all_rows': JSON.stringify(app.all_rows, getCircularReplacer()), 
-    'avail_drums': JSON.stringify(app.avail_drums, getCircularReplacer()),
-    'playing': false, 'bpm': app.bpm};
+                 'all_rows': JSON.stringify(app.all_rows, getCircularReplacer()), 
+                 'avail_drums': JSON.stringify(app.avail_drums, getCircularReplacer()),
+                 'playing': false, 'bpm': app.bpm};
     ws.send(JSON.stringify((state)));
 }
 

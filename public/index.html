@@ -152,8 +152,8 @@
 							</div>
 						</div>
 						<span>	
-							<input type="text" v-model="new_message" v-on:keyup.enter="SendMessage()" id="new_message">
-							<button @click="SendMessage()" v-bind:style="{backgroundColor:selected_user_color}" class="buttons" id="send_message_button" sytle="float:right"><i class="fas fa-play"></i></button>
+							<input type="text" v-model="new_message" v-on:keyup.enter="SendChat()" id="new_message">
+							<button @click="SendChat()" v-bind:style="{backgroundColor:selected_user_color}" class="buttons" id="send_message_button" sytle="float:right"><i class="fas fa-play"></i></button>
 						</span>
 					</div>
 				</span>
