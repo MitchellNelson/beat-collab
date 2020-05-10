@@ -1,0 +1,17 @@
+a:link {
+  color:white;
+}
+
+a:visited {
+  color:white;
+}
+img{
+	width: 50%;
+}
+.main_col{
+	width:60vw;
+	padding-left:20vw;
+}
+.main_col_entry{
+	padding: 1rem;
+}

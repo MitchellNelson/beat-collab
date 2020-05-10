@@ -34,11 +34,15 @@
 <body onload="Init()">
 	<div id="app">
 		<div class="nav">
+			<span class="about_link">
+				<a href="html/about.html">About</a>
+			</span>
 			<span>
 				<center>
-					<img id="logo" src="../images/logo.png">
+					<img id="logo" alt="Beat-Collab" src="../images/logo.png">
 				</center>
 			</span>
+
 		</div>
 		<center>
 			<div id="center_column">
@@ -86,8 +90,8 @@
 						<tr>
 							<td>
 								<div>
-									<button class="buttons" @click="add_drum_drop = !add_drum_drop" v-if="add_drum_drop == true">-</button>
-									<button class="buttons" @click="add_drum_drop = !add_drum_drop" v-else>+</button>
+									<button class="buttons" @click="add_drum_drop = !add_drum_drop" v-if="add_drum_drop == true">Hide</button>
+									<button class="buttons" @click="add_drum_drop = !add_drum_drop" v-else>Add Sound</button>
 									<div  :class="{'new_drums': add_drum_drop}">
 										<table>
 											<tr v-if="add_drum_drop == true" v-for="(drum, drum_index) in avail_drums">

@@ -45,6 +45,14 @@ input[type="text"], textarea{
     -moz-box-sizing:border-box; /* Firefox */
     -webkit-box-sizing:border-box; /* Safari */
 }
+a{
+	color:white;
+	text-decoration: none;
+}
+.about_link{
+	float: right;
+	padding:1rem;
+}
 .modal-mask {
   position: fixed;
   z-index: 9998;
@@ -343,7 +351,6 @@ input[type="text"], textarea{
 #new_message{
 	height: 1.7rem;
 	font-size:1rem;
-	/*width:100%;*/
 	padding-right:2.1rem;
 }
 @media only screen and (max-width: 1110px){
