@@ -115,13 +115,17 @@ a{
 	margin: 0;
 	padding:0;
 }
-.chat{
+#right_dash_item{
 	position: relative;
+	bottom:6rem;
+
+}
+.chat{
+	
 	background-color: var(--background-color);
 	margin: 0;
 	padding:0;
 	width: 20vw;
-	bottom:6rem;
 }
 .messages{
 
