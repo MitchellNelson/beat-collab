@@ -5,7 +5,7 @@ Collaborative music creator that gives multiple users the power to create a drum
 This project was inspired by my desire to make music with my friends while living in different states. Allowing multiple people to edit a drum beat at the same time adds a creative dimension and can allow for new ideas to come into play. 
 
 ## Screenshot
-![Drum machine grid](https://github.com/nels4929/beat-collab/edit/master/public/images/Screenshot.png?raw=true)
+![Drum machine grid](https://github.com/nels4929/beat-collab/master/public/images/Screenshot.png?raw=true)
 
 ## Tech/libraries used
 <b>Built with</b>
